@@ -184,6 +184,6 @@ app/
 - Idea, product behavior, and the four PRD assumptions: approved by the learner (`scope.md`, `prd.md`).
 - Stack (Vite + React + TypeScript, Vitest, Phosphor, Number Flow, plain CSS): agent recommendation, accepted by the learner ("apruebo el spec con ese stack y GitHub Pages").
 - Deployment to GitHub Pages: agent recommendation, accepted by the learner; publishing the repository and the site each need the learner's explicit OK in `6-ship`.
-- Which GitHub account owns the repository: open, asked in `6-ship` (the machine is signed in as `kasbsquall`; the learner's dossier also lists `kevinsotoburgos`).
+- Which GitHub account owns the repository: resolved in `6-ship`, `kasbsquall` (repository `kasbsquall/supper-ledger`).
 - Learner uncertainty: none raised so far. If one comes up during the build, it is recorded here.
 - Visual direction: chosen by the learner at the start of `5-build`.
