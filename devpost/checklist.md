@@ -52,10 +52,14 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 1, the learner tries the sample dinner in the chosen direction
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
 
+- [x] Calmer display font (Commissioner, chosen by the learner from eight candidates)
+- [x] Micro-sounds with a mute switch
+- [x] Ambient motion so the board does not sit still between taps
+- [x] Learner retried the changes ("Ya lo vi y lo escuché, sigue con el QA y el cierre.")
 - [ ] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
@@ -85,3 +89,4 @@ Activity mode: not started
 - In Español, "pay at pickup" rows show "en efectivo" as the method, and the undo buttons show "Deshacer" (screen readers still hear "Deshacer recojo a ...") — the longer Spanish labels pushed the ledger rows past the panel at 1440 px.
 - The display font changed from Bricolage Grotesque to Commissioner, a calmer humanist sans — Kevin's final review: the heavy condensed titles read as forced. Picked from a board of eight OFL candidates.
 - Added micro-sounds (Kenney CC0, with a mute switch in the header) and slow ambient motion (bubbles and a glint in the mercury, a breathing bulb, an hourglass that flips while money is owed, a drifting gradient on the header) — Kevin's final review: the board felt static between taps. All motion stops with reduced motion.
+- After an independent design review (score 7.1 of 7.5): the welcome shows the sample thermometer instead of only words, "no time given" now reads "No time yet, counted in 5:00 pm", the empty "Add to ledger" button is outlined instead of faded, and "plates to cook" stays on one line. Not taken: sorting debtors to the top, because a row that jumps away after a tap on Paid is worse at the pickup table than the existing "Owes" filter; restoring the dinner date and "Copy reminder", which were earlier decisions recorded above.

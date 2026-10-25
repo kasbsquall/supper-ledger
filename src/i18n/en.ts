@@ -68,7 +68,7 @@ export const en = {
   credit: "credit",
 
   slotsHeading: "Plates per pickup slot",
-  cookCount: "cook count",
+  cookCount: "",
   platesToCook: "plates to cook",
   pickedUpCount: "picked up",
 
@@ -93,7 +93,8 @@ export const en = {
   colStatus: "Status",
   owes: "owes",
   settled: "paid",
-  noTimeGiven: "no time given",
+  noTimeYet: "No time yet",
+  countedIn: (time: string) => `counted in ${time}`,
   noMethod: "No method given",
   statusOwes: "Owes",
   statusPaid: "Paid",

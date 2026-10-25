@@ -91,9 +91,9 @@ export function PersonRow({ person, dinner, index, onAction, onEdit }: Props) {
       <td className="c-pickup">
         <span className="ico-t num">
           <Clock weight="light" className="ico" aria-hidden="true" />
-          {formatTime(person.slot, dinner.lang)}
+          {person.noTimeGiven ? t.noTimeYet : formatTime(person.slot, dinner.lang)}
         </span>
-        {person.noTimeGiven && <span className="note">{t.noTimeGiven}</span>}
+        {person.noTimeGiven && <span className="note">{t.countedIn(formatTime(person.slot, dinner.lang))}</span>}
       </td>
       <td className="c-status">
         <span className={`status ${status.className}`}>

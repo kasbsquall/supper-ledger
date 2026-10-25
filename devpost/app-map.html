@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supper Ledger app map</title>
+<style>
+  :root{--fondo:#f8f1e7;--crema:#fffaf3;--tinta:#2e231d;--tinta-2:#5f5047;--tomate:#c8321f;--linea:#e6d9c8;--mostaza:#f1c75b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--tinta);font:16px/1.55 "Commissioner Variable","Commissioner","Fira Sans",sans-serif}
+  main{max-width:860px;margin:0 auto;padding:40px 16px 72px}
+  h1{font-size:34px;line-height:1.1;margin:0 0 8px;letter-spacing:-.02em}
+  h2{font-size:21px;margin:44px 0 10px;letter-spacing:-.01em}
+  p,li{max-width:70ch}
+  .lede{color:var(--tinta-2);margin:0}
+  code{font:14px/1.4 "Fira Mono",ui-monospace,monospace;background:var(--crema);border:1px solid var(--linea);border-radius:4px;padding:1px 5px}
+  .card{background:var(--crema);border:1px solid var(--linea);border-radius:10px;padding:18px 20px}
+  ol.route{padding-left:22px}
+  ol.route li{margin:0 0 14px}
+  svg{width:100%;height:auto;display:block}
+  svg text{font-family:inherit;fill:var(--tinta)}
+  .box{fill:var(--crema);stroke:var(--tinta);stroke-width:1.2}
+  .hot{fill:var(--tomate)}
+  .arrow{stroke:var(--tomate);stroke-width:1.6;fill:none;marker-end:url(#a)}
+  details{margin:10px 0}
+  summary{cursor:pointer;font-weight:600}
+  summary:focus-visible,a:focus-visible{outline:2px solid var(--tomate);outline-offset:2px}
+  .meta{font-size:14px;color:var(--tinta-2)}
+  table{border-collapse:collapse;width:100%}
+  td{border-top:1px solid var(--linea);padding:8px 6px;vertical-align:top}
+  td:first-child{width:42%}
+</style>
+</head>
+<body>
+<main>
+  <h1>Supper Ledger app map</h1>
+  <p class="lede">A take-home guide to where things live. Supper Ledger is the night-of ledger for a benefit dinner: the organizer pastes the group chat and sees money against the goal, plates per pickup slot and who still owes. It runs entirely in the browser; nothing is sent anywhere.</p>
+
+  <h2>The main pieces</h2>
+  <ul>
+    <li><b>The reader</b> (<code>src/ledger/parse.ts</code>) turns chat lines into orders and payments with plain rules, in English and Spanish. No AI model and no API key.</li>
+    <li><b>The ledger</b> (<code>src/ledger/apply.ts</code>, <code>totals.ts</code>) merges what was read into the people list and adds up money, plates and slots. Every change returns a new copy.</li>
+    <li><b>Storage</b> (<code>src/ledger/storage.ts</code>) keeps the ledger in the browser's local storage under <code>supper-ledger:v1</code>.</li>
+    <li><b>The screens</b> (<code>src/App.tsx</code> and <code>src/components/</code>) show the welcome, setup and the board with the thermometer.</li>
+  </ul>
+
+  <h2>One action, end to end: pasting the group chat</h2>
+  <div class="card">
+    <svg viewBox="0 0 820 190" role="img" aria-labelledby="dg-t">
+      <title id="dg-t">Paste flows from the paste box through App, the reader and the ledger to storage and the thermometer</title>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="hot"/></marker></defs>
+      <rect class="box" x="6" y="20" width="150" height="64" rx="8"/><text x="20" y="46" font-weight="600">Paste box</text><text x="20" y="68" font-size="13">PasteBox.tsx</text>
+      <rect class="box" x="196" y="20" width="150" height="64" rx="8"/><text x="210" y="46" font-weight="600">handlePaste</text><text x="210" y="68" font-size="13">App.tsx</text>
+      <rect class="box" x="386" y="20" width="200" height="64" rx="8"/><text x="400" y="46" font-weight="600">applyPaste + readChat</text><text x="400" y="68" font-size="13">apply.ts, parse.ts</text>
+      <rect class="box" x="626" y="20" width="188" height="64" rx="8"/><text x="640" y="46" font-weight="600">computeTotals</text><text x="640" y="68" font-size="13">totals.ts</text>
+      <rect class="box" x="196" y="118" width="150" height="56" rx="8"/><text x="210" y="142" font-weight="600">saveLedger</text><text x="210" y="162" font-size="13">storage.ts</text>
+      <rect class="box" x="626" y="118" width="188" height="56" rx="8"/><text x="640" y="142" font-weight="600">Thermometer rises</text><text x="640" y="162" font-size="13">GoalSummary, Thermometer</text>
+      <path class="arrow" d="M156 52H192"/><path class="arrow" d="M346 52H382"/><path class="arrow" d="M586 52H622"/>
+      <path class="arrow" d="M720 84V114"/><path class="arrow" d="M271 84V114"/>
+    </svg>
+  </div>
+
+  <h2>Reference route</h2>
+  <p class="meta">A route to follow on your own. It was not toured together during the build.</p>
+  <ol class="route">
+    <li><code>src/components/PasteBox.tsx</code>, search <code>handleSubmit</code>. Pressing "Add to ledger" hands the pasted text to <code>onAdd</code>, which App wires to <code>handlePaste</code>.</li>
+    <li><code>src/ledger/parse.ts</code>, search <code>export function readLine</code>. One chat line becomes a name, plates, a payment and a pickup time. The Spanish and English keyword lists sit at the top in <code>EN</code> and <code>ES</code>.</li>
+    <li><code>src/ledger/apply.ts</code>, search <code>export function applyPaste</code>. It skips lines already added, finds or creates each person, snaps the time to the nearest pickup slot, and records what was read in <code>lastPaste</code>. The board then recomputes with <code>computeTotals</code> in <code>src/ledger/totals.ts</code>.</li>
+  </ol>
+
+  <h2>To change this, start here</h2>
+  <table>
+    <tr><td>Wording on any screen, English or Spanish</td><td><code>src/i18n/en.ts</code> and <code>src/i18n/es.ts</code> (both must keep the same keys; test 24 checks it)</td></tr>
+    <tr><td>A new phrase the reader should understand, like another payment app</td><td><code>src/ledger/parse.ts</code>, the <code>payVerbs</code> and <code>methods</code> lists, then add a line to <code>src/ledger/ledger.test.ts</code></td></tr>
+    <tr><td>Colors and the font</td><td><code>src/styles/tokens.css</code></td></tr>
+    <tr><td>The sample dinner</td><td><code>src/sample/sample-en.ts</code> and <code>sample-es.ts</code></td></tr>
+    <tr><td>Sounds and how loud they are</td><td><code>src/lib/sound.ts</code> (<code>VOLUME</code>) and the files in <code>public/sfx/</code></td></tr>
+    <tr><td>The slow background motion</td><td><code>src/styles/app.css</code>, the block that starts with "ambient life"</td></tr>
+  </table>
+
+  <h2>A practice to reuse</h2>
+  <div class="card">
+    <p>Each requirement in <code>devpost/prd.md</code> was written as something you can observe, then pinned to a numbered test. When the Spanish slice landed, test 26 ("Tía Rosa 4 platos, yapeó 2") failed even though the code looked right. The failing assertion pointed straight at the reader: a capture group in <code>plin(e[oó])?</code> was stealing the amount. On the next project, write the example sentence before the code and turn it into a test first; the bug then shows up as a red line instead of a wrong number on the night.</p>
+  </div>
+
+  <h2>Run it again</h2>
+  <p>From <code>app/</code>: <code>npm install</code>, then <code>npm run dev</code> and open the address it prints (path <code>/supper-ledger/</code>). Tests: <code>npm test</code>.</p>
+  <details>
+    <summary>About this map</summary>
+    <p class="meta">A snapshot generated from the code at commit <code id="commit">7968802</code> plus the final QA fixes. The code can drift after this; trust the source over the map.</p>
+  </details>
+</main>
+</body>
+</html>
