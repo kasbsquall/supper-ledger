@@ -1,5 +1,5 @@
 import NumberFlow from "@number-flow/react";
-import { CheckCircle, FlagPennant, ForkKnife, HourglassMedium, TrendUp, UsersThree } from "@phosphor-icons/react";
+import { ChatCircleText, CheckCircle, FlagPennant, ForkKnife, HourglassMedium, TrendUp, UsersThree } from "@phosphor-icons/react";
 import type { Lang } from "../ledger/types";
 import type { Totals } from "../ledger/totals";
 import { currencySymbol, dict, formatMoney } from "../i18n";
@@ -18,6 +18,23 @@ export function GoalSummary({ totals, lang, pulseKey }: Props) {
   const pct = Math.round(totals.progress * 100);
   const left = totals.goal - totals.collected;
   const locale = t.locale;
+
+  // Before the first paste there is nothing to report: show the goal and what to do, not zeros.
+  if (totals.people === 0) {
+    return (
+      <section className="panel goal rise" style={{ ["--b" as string]: 1 }} aria-labelledby="goal-h">
+        <h2 id="goal-h" className="sr">{t.goalHeading}</h2>
+        <Thermometer progress={0} goal={totals.goal} lang={lang} pulseKey={0} />
+        <div className="fig-block empty-goal">
+          <p className="of">{t.goalLabel} <span className="num">{formatMoney(totals.goal, lang)}</span></p>
+          <p className="empty-msg">
+            <ChatCircleText weight="light" className="ico" aria-hidden="true" />
+            {t.emptyBoard}
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="panel goal rise" style={{ ["--b" as string]: 1 }} aria-labelledby="goal-h">

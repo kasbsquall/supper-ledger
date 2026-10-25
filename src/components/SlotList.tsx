@@ -29,11 +29,15 @@ export function SlotList({ slots, lang }: Props) {
                 <Clock weight="light" className="ico" aria-hidden="true" />
                 {formatTime(s.slot)}
               </span>
-              <span className="cook">
-                <b className="num">{s.plates}</b>
-                <span>{t.platesToCook}</span>
-              </span>
-              <span className="bar">
+              {s.plates > 0 ? (
+                <span className="cook">
+                  <b className="num">{s.plates}</b>
+                  <span>{t.platesToCook}</span>
+                </span>
+              ) : (
+                <span className="cook none">{t.noPlatesYet}</span>
+              )}
+              {s.plates > 0 && <span className="bar">
                 <span className="meter" role="meter" aria-valuemin={0} aria-valuemax={s.plates} aria-valuenow={s.pickedUp} aria-label={`${formatTime(s.slot)} ${t.pickedUpCount}`}>
                   <i style={{ transform: `scaleX(${f})`, transitionDelay: `${i * 70}ms` }} />
                 </span>
@@ -41,7 +45,7 @@ export function SlotList({ slots, lang }: Props) {
                   <PickedIcon weight="light" className="ico" aria-hidden="true" />
                   <span className="num">{s.pickedUp}</span>&nbsp;{t.pickedUpCount}
                 </span>
-              </span>
+              </span>}
             </li>
           );
         })}

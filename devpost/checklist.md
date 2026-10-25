@@ -9,7 +9,7 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
 
 ## Slices
 
-- [ ] **1. Paste the sample dinner and see who owes and how many plates to cook**
+- [x] **1. Paste the sample dinner and see who owes and how many plates to cook**
   Becomes usable: The page opens, "Try the sample dinner" loads the labeled sample, and pasting its chat lines fills the board: goal figure, plates sold and paid, money owed, plates per pickup slot, ledger rows, and the read / not-read result. Laid out in the visual direction the learner picked.
   Why now: This is the kernel (`scope.md > The Unique Kernel`). The reader is also the riskiest piece, so its rules are proven first with numbered tests from the PRD examples.
   PRD ref: `prd.md > The Core Journey` (steps 1, 4-6), `prd.md > Reading pasted chat messages`, `prd.md > The board`, `prd.md > Sample dinner`
@@ -71,3 +71,8 @@ Reflection: not started
 Activity mode: not started
 
 ## Revisions
+
+- TypeScript pinned to 5.9.3 instead of trying 7.0.2 first — chosen at setup to avoid an untested toolchain before the deadline (`spec.md > Stack` allowed this fallback).
+- The reader skips chat lines already added — found while building the sample: organizers paste overlapping chat, and repeating a line would double the order. Shown as "already in the ledger, skipped" in the paste result.
+- The dinner date shown in the prototypes was dropped — `prd.md > The Core Journey` setup has no date field.
+- The sample loads earlier messages already in the ledger, with the newest block waiting in the paste box — so the board shows a dinner in progress and the paste visibly moves the thermometer ($1,650 to $1,995).
