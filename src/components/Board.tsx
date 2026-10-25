@@ -1,4 +1,6 @@
-import type { Ledger } from "../ledger/types";
+import type { Ledger, Person } from "../ledger/types";
+import type { PersonEdit } from "../ledger/apply";
+import type { RowAction } from "./PersonRow";
 import type { Totals } from "../ledger/totals";
 import { GoalSummary } from "./GoalSummary";
 import { SlotList } from "./SlotList";
@@ -13,9 +15,11 @@ type Props = {
   initialPaste: string;
   pulseKey: number;
   onPaste: (text: string) => void;
+  onAction: (action: RowAction, person: Person) => void;
+  onEdit: (person: Person, edit: PersonEdit) => void;
 };
 
-export function Board({ ledger, totals, initialPaste, pulseKey, onPaste }: Props) {
+export function Board({ ledger, totals, initialPaste, pulseKey, onPaste, onAction, onEdit }: Props) {
   const lang = ledger.dinner.lang;
   return (
     <main className="wrap">
@@ -26,7 +30,7 @@ export function Board({ ledger, totals, initialPaste, pulseKey, onPaste }: Props
           <PasteBox lang={lang} initialText={initialPaste} lastPaste={ledger.lastPaste} onAdd={onPaste} />
         </div>
       </div>
-      <LedgerList dinner={ledger.dinner} people={ledger.people} />
+      <LedgerList dinner={ledger.dinner} people={ledger.people} counts={totals.counts} onAction={onAction} onEdit={onEdit} />
     </main>
   );
 }

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { GearSix, Warning } from "@phosphor-icons/react";
-import type { Lang, Ledger } from "./ledger/types";
-import { applyPaste } from "./ledger/apply";
+import type { Lang, Ledger, Person } from "./ledger/types";
+import { applyPaste, editPerson, markPaid, setPickedUp, undoPaid, type PersonEdit } from "./ledger/apply";
+import { reminderText } from "./ledger/reminder";
 import { computeTotals } from "./ledger/totals";
 import { newDinner, settingsOf, updateDinner, type DinnerSettings } from "./ledger/dinner";
 import { clearLedger, loadLedger, saveLedger } from "./ledger/storage";
@@ -11,6 +12,8 @@ import { Header } from "./components/Header";
 import { Welcome } from "./components/Welcome";
 import { Setup } from "./components/Setup";
 import { Board } from "./components/Board";
+import { CopyFallback, Toast, type ToastKind, type ToastMessage } from "./components/Toast";
+import type { RowAction } from "./components/PersonRow";
 
 // Picks Welcome, Setup or Board and owns the ledger. spec.md > The Core Journey Through the System.
 
@@ -23,6 +26,9 @@ export function App() {
   const [screen, setScreen] = useState<Screen>("board");
   const [pulseKey, setPulseKey] = useState(0);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [manualCopy, setManualCopy] = useState<string | null>(null);
+  const clearToast = useCallback(() => setToast(null), []);
   const lang: Lang = ledger?.dinner.lang ?? "en";
   const t = dict(lang);
 
@@ -63,6 +69,43 @@ export function App() {
     setLedger(next);
   }
 
+  function say(kind: ToastKind, text: string) {
+    setToast({ id: Date.now(), kind, text });
+  }
+
+  async function copyReminder(person: Person, current: Ledger) {
+    const text = reminderText(person, current.dinner);
+    try {
+      await navigator.clipboard.writeText(text);
+      say("copied", dict(current.dinner.lang).toastCopied(person.name));
+    } catch {
+      setManualCopy(text);
+    }
+  }
+
+  function handleAction(action: RowAction, person: Person) {
+    if (!ledger) return;
+    const tt = dict(ledger.dinner.lang);
+    if (action === "remind") {
+      void copyReminder(person, ledger);
+      return;
+    }
+    let next = ledger;
+    if (action === "paid") next = markPaid(ledger, person.id);
+    if (action === "undoPaid") next = undoPaid(ledger, person.id);
+    if (action === "picked") next = setPickedUp(ledger, person.id, true);
+    if (action === "undoPicked") next = setPickedUp(ledger, person.id, false);
+    const after = computeTotals(next);
+    if (after.collected > computeTotals(ledger).collected) setPulseKey((k) => k + 1);
+    if (action === "paid") say("paid", tt.toastPaid(person.name, Math.round(after.progress * 100)));
+    if (action === "picked") say("picked", tt.toastPicked(person.name, person.plates));
+    setLedger(next);
+  }
+
+  function handleEdit(person: Person, edit: PersonEdit) {
+    if (ledger) setLedger(editPerson(ledger, person.id, edit));
+  }
+
   if (screen === "setup" || (screen === "settings" && ledger)) {
     const isEditing = screen === "settings" && !!ledger && !ledger.dinner.isSample;
     return (
@@ -100,7 +143,9 @@ export function App() {
           {t.notSaved}
         </p>
       )}
-      <Board key={ledger.dinner.name + ledger.dinner.isSample} ledger={ledger} totals={computeTotals(ledger)} initialPaste={initialPaste} pulseKey={pulseKey} onPaste={handlePaste} />
+      <Board key={ledger.dinner.name + ledger.dinner.isSample} ledger={ledger} totals={computeTotals(ledger)} initialPaste={initialPaste} pulseKey={pulseKey} onPaste={handlePaste} onAction={handleAction} onEdit={handleEdit} />
+      <Toast message={toast} onDone={clearToast} />
+      {manualCopy && <CopyFallback text={manualCopy} lang={lang} onClose={() => setManualCopy(null)} />}
     </>
   );
 }

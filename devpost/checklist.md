@@ -19,7 +19,7 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
   Learner check: Run `npm run dev`, open the address it prints, tap "Try the sample dinner", tap "Add to ledger", and check that Marcus lands in the 6:00 pm slot owing $45.
   Commit: `feat: read pasted chat into the dinner ledger and board`
 
-- [ ] **2. Start my own dinner and find it again tomorrow**
+- [x] **2. Start my own dinner and find it again tomorrow**
   Becomes usable: "Start my dinner" opens setup (name, price per plate, goal, pickup times, optional pay-to handle); the empty board explains what to paste; the dinner survives closing the page; Dinner settings edits it and "Delete this dinner" clears it after a confirmation.
   Why now: Turns the demo into something a real organizer can use, and puts the data model through a save-and-reload round trip early.
   PRD ref: `prd.md > The Core Journey` (steps 2-3), `prd.md > Screens and Layout`, `prd.md > States and Boundaries`
@@ -51,7 +51,7 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 1, the learner tries the sample dinner in the chosen direction
+- [x] Early usable behavior explored — after slice 1, the learner tries the sample dinner in the chosen direction
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review

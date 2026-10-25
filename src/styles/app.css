@@ -327,3 +327,26 @@ th:last-child,td:last-child{padding-right:20px}
 button.link-set{border:0;background:transparent;cursor:pointer;font:inherit;font-weight:560;font-size:14px}
 @media (max-width:520px){.field-row{grid-template-columns:1fr}}
 .act.icon{width:34px}
+
+/* row actions and edit */
+.act-gap{display:block}
+.acts{grid-template-columns:repeat(4,auto)}
+@media (min-width:1281px){.acts{grid-template-columns:100px 120px 112px 34px}}
+@media (max-width:1280px) and (min-width:821px){.act .lbl{display:none}.acts .act{width:34px;padding:0}.acts{grid-template-columns:repeat(4,34px)}}
+tr.editing td{padding:14px 24px;background:color-mix(in oklab,var(--mostaza) 12%,var(--crema))}
+.edit-form{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+.edit-form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--tinta-2)}
+.edit-form input,.edit-form select{font:inherit;font-size:15px;color:var(--tinta);background:var(--crema);border:1.5px solid var(--linea-2);border-radius:var(--r-in);padding:7px 10px;min-width:0}
+.edit-form label:first-child input{width:220px}
+.edit-form label:nth-child(2) input,.edit-form label:nth-child(3) input{width:90px}
+.edit-form input:focus-visible,.edit-form select:focus-visible{outline:none;border-color:var(--tinta);box-shadow:0 0 0 3px color-mix(in oklab,var(--mostaza) 70%,transparent)}
+.edit-actions{display:flex;gap:8px}
+.copy-fallback{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:10;width:min(520px,calc(100vw - 32px));padding:18px;display:grid;gap:10px}
+.copy-fallback p{margin:0;font-weight:600}
+.copy-fallback textarea{font:inherit;font-size:15px;border:1.5px solid var(--linea-2);border-radius:var(--r-in);padding:10px;background:var(--fondo);color:var(--tinta)}
+.copy-fallback .act{justify-self:start}
+@media (max-width:820px){
+  .edit-form label:first-child input{width:100%}
+  .edit-form label:first-child{flex:1 1 100%}
+  .acts{grid-template-columns:1fr 1fr 1fr 40px}
+}

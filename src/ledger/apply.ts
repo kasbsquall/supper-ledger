@@ -114,3 +114,52 @@ function makeId(): string {
   fallbackId++;
   return `p${Date.now().toString(36)}${fallbackId}`;
 }
+
+// Row actions at the pickup table. Implements prd.md > At the pickup table.
+
+function updatePerson(ledger: Ledger, id: string, change: (p: Person) => Person): Ledger {
+  return { ...ledger, people: ledger.people.map((p) => (p.id === id ? change(p) : p)) };
+}
+
+/** Settles the balance and remembers what was paid before, so it can be undone. */
+export function markPaid(ledger: Ledger, id: string): Ledger {
+  return updatePerson(ledger, id, (p) => {
+    const owed = p.plates * ledger.dinner.pricePerPlate;
+    return p.paid >= owed ? p : { ...p, paidBeforeMark: p.paid, paid: owed };
+  });
+}
+
+export function undoPaid(ledger: Ledger, id: string): Ledger {
+  return updatePerson(ledger, id, (p) => {
+    if (p.paidBeforeMark === undefined) return p;
+    const { paidBeforeMark, ...rest } = p;
+    return { ...rest, paid: paidBeforeMark };
+  });
+}
+
+/** Picking up changes the slot counts, never the money. */
+export function setPickedUp(ledger: Ledger, id: string, pickedUp: boolean): Ledger {
+  return updatePerson(ledger, id, (p) => ({ ...p, pickedUp }));
+}
+
+export interface PersonEdit {
+  name: string;
+  plates: number;
+  paid: number;
+  slot: string;
+}
+
+/** A hand correction for a line the reader got wrong. */
+export function editPerson(ledger: Ledger, id: string, edit: PersonEdit): Ledger {
+  return updatePerson(ledger, id, (p) => {
+    const { paidBeforeMark: _dropped, ...rest } = p;
+    return {
+      ...rest,
+      name: edit.name.trim() || p.name,
+      plates: Math.max(0, Math.round(edit.plates)),
+      paid: Math.max(0, Math.round(edit.paid)),
+      slot: ledger.dinner.slots.includes(edit.slot) ? edit.slot : p.slot,
+      noTimeGiven: edit.slot === p.slot ? p.noTimeGiven : false,
+    };
+  });
+}
