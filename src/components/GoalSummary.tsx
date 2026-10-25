@@ -84,7 +84,7 @@ export function GoalSummary({ totals, lang, pulseKey }: Props) {
           <b className="num"><NumberFlow value={totals.platesPaid} locales={locale} /></b>
           <span>{t.platesPaid}</span>
         </div>
-        <div className="stat owed">
+        <div className={`stat owed${totals.owed > 0 ? " live" : ""}`}>
           <HourglassMedium weight="light" className="ico" aria-hidden="true" />
           <b className="num">{formatMoney(totals.owed, lang)}</b>
           <span>{t.stillOwed}</span>

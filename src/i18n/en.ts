@@ -5,6 +5,9 @@ export const en = {
   brand: "Supper Ledger",
   boardLabel: "Supper Ledger, board",
   language: "Language",
+  sounds: "Sounds",
+  soundsOn: "Sounds on",
+  soundsOff: "Sounds off",
 
   welcomeTitle: "The night-of ledger for your benefit dinner",
   welcomeBody: "Paste the group chat. See who paid, who still owes, and how many plates to cook for each pickup time.",

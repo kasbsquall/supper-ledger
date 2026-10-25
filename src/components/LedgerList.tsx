@@ -7,6 +7,7 @@ import type { Totals } from "../ledger/totals";
 import { balance } from "../ledger/totals";
 import { dict } from "../i18n";
 import { PersonRow, type RowAction } from "./PersonRow";
+import { play } from "../lib/sound";
 
 // Implements prd.md > Screens and Layout (Ledger): filter chips and one row per person, newest first.
 
@@ -46,7 +47,10 @@ export function LedgerList({ dinner, people, counts, onAction, onEdit }: Props) 
         {people.length > 0 && (
           <div className="chips" role="group" aria-label={t.filterLabel}>
             {chips.map(([key, label, ChipIcon, n]) => (
-              <button key={key} type="button" className="chip" aria-pressed={filter === key} onClick={() => setFilter(key)}>
+              <button key={key} type="button" className="chip" aria-pressed={filter === key} onClick={() => {
+                if (filter !== key) play("toggle");
+                setFilter(key);
+              }}>
                 <ChipIcon weight="light" className="ico" aria-hidden="true" />
                 {label} <span className="n num">({n})</span>
               </button>

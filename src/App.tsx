@@ -9,6 +9,7 @@ import { clearLedger, loadLedger, saveLedger } from "./ledger/storage";
 import { SAMPLE_CHAT_EN, sampleLedgerEn } from "./sample/sample-en";
 import { SAMPLE_CHAT_ES, sampleLedgerEs } from "./sample/sample-es";
 import { dict } from "./i18n";
+import { play, type Cue } from "./lib/sound";
 import { Header } from "./components/Header";
 import { Welcome } from "./components/Welcome";
 import { Setup } from "./components/Setup";
@@ -19,6 +20,13 @@ import type { RowAction } from "./components/PersonRow";
 // Picks Welcome, Setup or Board and owns the ledger. spec.md > The Core Journey Through the System.
 
 type Screen = "board" | "setup" | "settings";
+
+const ACTION_CUE: Record<Exclude<RowAction, "remind">, Cue> = { paid: "paid", undoPaid: "undo", picked: "picked", undoPicked: "undo" };
+
+/** True when this change carries the money collected to the goal or past it. */
+function reachedGoal(before: Ledger, after: Ledger): boolean {
+  return computeTotals(before).progress < 1 && computeTotals(after).progress >= 1;
+}
 
 const BLANK: DinnerSettings = { name: "", pricePerPlate: 0, goal: 0, slots: [], payTo: "", lang: "en" };
 
@@ -84,6 +92,8 @@ export function App() {
   function handlePaste(text: string) {
     if (!ledger) return;
     const next = applyPaste(ledger, text);
+    const read = (next.lastPaste?.orders ?? 0) + (next.lastPaste?.payments ?? 0);
+    play(reachedGoal(ledger, next) ? "goal" : read > 0 ? "paste" : "undo");
     if (computeTotals(next).collected > computeTotals(ledger).collected) setPulseKey((k) => k + 1);
     setLedger(next);
   }
@@ -96,6 +106,7 @@ export function App() {
     const text = reminderText(person, current.dinner);
     try {
       await navigator.clipboard.writeText(text);
+      play("copy");
       say("copied", dict(current.dinner.lang).toastCopied(person.name));
     } catch {
       setManualCopy(text);
@@ -115,6 +126,7 @@ export function App() {
     if (action === "picked") next = setPickedUp(ledger, person.id, true);
     if (action === "undoPicked") next = setPickedUp(ledger, person.id, false);
     const after = computeTotals(next);
+    play(reachedGoal(ledger, next) ? "goal" : ACTION_CUE[action]);
     if (after.collected > computeTotals(ledger).collected) setPulseKey((k) => k + 1);
     if (action === "paid") say("paid", tt.toastPaid(person.name, Math.round(after.progress * 100)));
     if (action === "picked") say("picked", tt.toastPicked(person.name, person.plates));

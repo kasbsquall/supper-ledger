@@ -3,6 +3,7 @@ import { Flask, HandCoins, Plus, Tag } from "@phosphor-icons/react";
 import type { Dinner, Lang } from "../ledger/types";
 import { dict, formatMoney } from "../i18n";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { SoundSwitch } from "./SoundSwitch";
 
 // The tomato-red header band shared by every screen. spec.md > Look and Feel.
 
@@ -39,6 +40,7 @@ export function Header({ lang, onLangChange, dinner, actions, onStartOwn, childr
         <div className="top">
           <Brand lang={lang} />
           <span className="spacer" />
+          <SoundSwitch lang={lang} />
           <LanguageSwitch lang={lang} onChange={onLangChange} />
           {actions}
         </div>

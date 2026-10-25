@@ -7,6 +7,9 @@ export const es: Dict = {
   brand: "Supper Ledger",
   boardLabel: "Supper Ledger, tablero",
   language: "Idioma",
+  sounds: "Sonidos",
+  soundsOn: "Sonidos activados",
+  soundsOff: "Sonidos silenciados",
 
   welcomeTitle: "La cuenta de la noche para tu pollada pro-fondos",
   welcomeBody: "Pega el chat del grupo. Mira quién pagó, quién debe y cuántos platos cocinar para cada hora de recojo.",
