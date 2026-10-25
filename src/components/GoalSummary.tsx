@@ -47,11 +47,11 @@ export function GoalSummary({ totals, lang, pulseKey }: Props) {
           <NumberFlow value={Math.floor(totals.collected / 100)} locales={locale} />
         </div>
         <p className="sr" aria-live="polite">
-          {`${formatMoney(totals.collected, lang)} ${t.collectedOf} ${formatMoney(totals.goal, lang)} ${t.goal}, ${pct}%`}
+          {`${formatMoney(totals.collected, lang)} ${t.collectedOf} ${formatMoney(totals.goal, lang)}${t.goalAfter ? ` ${t.goalAfter}` : ""}, ${pct}%`}
         </p>
         <div className="of">
           <span>
-            {t.collectedOf} <span className="num">{formatMoney(totals.goal, lang)}</span> {t.goal}
+            {t.collectedOf} <span className="num">{formatMoney(totals.goal, lang)}</span> {t.goalAfter}
           </span>
           <span className="pct">
             <TrendUp weight="light" className="ico" aria-hidden="true" />

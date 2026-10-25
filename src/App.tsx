@@ -7,6 +7,7 @@ import { computeTotals } from "./ledger/totals";
 import { newDinner, settingsOf, updateDinner, type DinnerSettings } from "./ledger/dinner";
 import { clearLedger, loadLedger, saveLedger } from "./ledger/storage";
 import { SAMPLE_CHAT_EN, sampleLedgerEn } from "./sample/sample-en";
+import { SAMPLE_CHAT_ES, sampleLedgerEs } from "./sample/sample-es";
 import { dict } from "./i18n";
 import { Header } from "./components/Header";
 import { Welcome } from "./components/Welcome";
@@ -29,8 +30,14 @@ export function App() {
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [manualCopy, setManualCopy] = useState<string | null>(null);
   const clearToast = useCallback(() => setToast(null), []);
-  const lang: Lang = ledger?.dinner.lang ?? "en";
+  const [uiLang, setUiLang] = useState<Lang>(() => ledger?.dinner.lang ?? "en");
+  // A saved dinner keeps its own language; Welcome and a new setup follow the switch.
+  const lang: Lang = ledger && screen !== "setup" ? ledger.dinner.lang : uiLang;
   const t = dict(lang);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   // Local storage is the external system to keep in sync. spec.md > Storage.
   useEffect(() => {
@@ -42,8 +49,20 @@ export function App() {
     window.scrollTo(0, 0);
   }, [screen, ledger?.dinner.isSample]);
 
+  function sampleIn(next: Lang): Ledger {
+    return next === "es" ? sampleLedgerEs() : sampleLedgerEn();
+  }
+
+  // prd.md > Language and currency. The sample swaps to the other language's sample dinner.
+  function changeLang(next: Lang) {
+    setUiLang(next);
+    if (!ledger || screen === "setup") return;
+    if (ledger.dinner.isSample) setLedger(sampleIn(next));
+    else setLedger({ ...ledger, dinner: { ...ledger.dinner, lang: next } });
+  }
+
   function startSample() {
-    setLedger(sampleLedgerEn());
+    setLedger(sampleIn(uiLang));
     setScreen("board");
   }
 
@@ -110,9 +129,10 @@ export function App() {
     const isEditing = screen === "settings" && !!ledger && !ledger.dinner.isSample;
     return (
       <>
-        <Header lang={lang} />
+        <Header lang={lang} onLangChange={changeLang} />
         <Setup
           key={screen}
+          lang={lang}
           initial={isEditing && ledger ? settingsOf(ledger.dinner) : { ...BLANK, lang }}
           isEditing={isEditing}
           onSave={handleSave}
@@ -123,10 +143,10 @@ export function App() {
     );
   }
 
-  if (!ledger) return <Welcome lang={lang} onSample={startSample} onStart={startOwn} />;
+  if (!ledger) return <Welcome lang={lang} onLangChange={changeLang} onSample={startSample} onStart={startOwn} />;
 
   // The sample's newest chat block waits in the paste box until it is added.
-  const initialPaste = ledger.dinner.isSample && ledger.seen.length === 0 ? SAMPLE_CHAT_EN : "";
+  const initialPaste = ledger.dinner.isSample && ledger.seen.length === 0 ? (lang === "es" ? SAMPLE_CHAT_ES : SAMPLE_CHAT_EN) : "";
   const actions = ledger.dinner.isSample ? null : (
     <button type="button" className="link-set" onClick={() => setScreen("settings")}>
       <GearSix weight="light" className="ico" aria-hidden="true" />
@@ -136,14 +156,14 @@ export function App() {
 
   return (
     <>
-      <Header lang={lang} dinner={ledger.dinner} actions={actions} onStartOwn={startOwn} />
+      <Header lang={lang} onLangChange={changeLang} dinner={ledger.dinner} actions={actions} onStartOwn={startOwn} />
       {saveFailed && (
         <p className="notice wrap" role="status">
           <Warning weight="light" className="ico" aria-hidden="true" />
           {t.notSaved}
         </p>
       )}
-      <Board key={ledger.dinner.name + ledger.dinner.isSample} ledger={ledger} totals={computeTotals(ledger)} initialPaste={initialPaste} pulseKey={pulseKey} onPaste={handlePaste} onAction={handleAction} onEdit={handleEdit} />
+      <Board key={ledger.dinner.name + ledger.dinner.isSample + lang} ledger={ledger} totals={computeTotals(ledger)} initialPaste={initialPaste} pulseKey={pulseKey} onPaste={handlePaste} onAction={handleAction} onEdit={handleEdit} />
       <Toast message={toast} onDone={clearToast} />
       {manualCopy && <CopyFallback text={manualCopy} lang={lang} onClose={() => setManualCopy(null)} />}
     </>

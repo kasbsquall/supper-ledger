@@ -7,14 +7,15 @@ import { Header } from "./Header";
 
 type Props = {
   lang: Lang;
+  onLangChange: (lang: Lang) => void;
   onSample: () => void;
   onStart: () => void;
 };
 
-export function Welcome({ lang, onSample, onStart }: Props) {
+export function Welcome({ lang, onLangChange, onSample, onStart }: Props) {
   const t = dict(lang);
   return (
-    <Header lang={lang}>
+    <Header lang={lang} onLangChange={onLangChange}>
       <div className="welcome rise">
         <h1>{t.welcomeTitle}</h1>
         <p>{t.welcomeBody}</p>

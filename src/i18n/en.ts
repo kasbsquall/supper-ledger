@@ -53,6 +53,8 @@ export const en = {
   thermometer: "Goal thermometer",
   collectedOf: "collected of",
   goal: "goal",
+  /** Word after the goal amount in "collected of $3,000 goal". */
+  goalAfter: "goal",
   toGo: "to go",
   goalReached: "Goal reached",
   now: "Now",
@@ -109,6 +111,9 @@ export const en = {
   actUndoPaid: "Undo paid",
   actPicked: "Picked up",
   actUndoPicked: "Undo pickup",
+  /** Visible undo labels; the full ones above stay as the accessible name. */
+  actUndoPaidShort: "Undo paid",
+  actUndoPickedShort: "Undo pickup",
   actRemind: "Reminder",
   actEdit: "Edit",
   actSave: "Save",

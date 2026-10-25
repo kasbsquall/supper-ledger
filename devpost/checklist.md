@@ -29,7 +29,7 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
   Learner check: Create a dinner with your own numbers, paste a line, close the tab, reopen it, and confirm the line is still there.
   Commit: `feat: set up a dinner and keep it on this device`
 
-- [ ] **3. Settle people at the pickup table**
+- [x] **3. Settle people at the pickup table**
   Becomes usable: Each row has Paid and Picked up with undo, a hand edit for misread lines, filter chips (All, Owes, Paid, Picked up), and Copy reminder with a confirmation, falling back to a selectable text box when the clipboard is blocked.
   Why now: Completes the core loop (`scope.md > The Core Loop`) on top of a ledger that already reads and persists.
   PRD ref: `prd.md > At the pickup table`, `prd.md > Reminders`
@@ -39,7 +39,7 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
   Learner check: In the sample, tap Paid on Aunt Linda, then undo it; copy Marcus's reminder and paste it somewhere to read it.
   Commit: `feat: settle payments and pickups and copy reminders`
 
-- [ ] **4. Switch to Español with soles and Yape**
+- [x] **4. Switch to Español with soles and Yape**
   Becomes usable: The language switch changes every label, the currency to S/ with Peruvian formatting, the payment methods, the sample (a pollada), and the reader's keywords.
   Why now: Depends on every string existing; done last so nothing is translated twice.
   PRD ref: `prd.md > Language and currency`
@@ -76,3 +76,10 @@ Activity mode: not started
 - The reader skips chat lines already added — found while building the sample: organizers paste overlapping chat, and repeating a line would double the order. Shown as "already in the ledger, skipped" in the paste result.
 - The dinner date shown in the prototypes was dropped — `prd.md > The Core Journey` setup has no date field.
 - The sample loads earlier messages already in the ledger, with the newest block waiting in the paste box — so the board shows a dinner in progress and the paste visibly moves the thermometer ($1,650 to $1,995).
+- Reminders leave out the pickup time when the chat gave none — found while testing Aunt Linda: promising "pickup at 5:00 pm" would be invented. Covered by test 23.
+- The reminder button label is "Reminder" (it still copies the message) — "Copy reminder" pushed the row actions outside the ledger panel at 1440 px.
+- Pickup times follow the language ("1:00 p. m." in Español) — found on the Spanish board, where English "pm" next to soles read as a leftover string.
+- The Spanish reader also takes "a la 1" and "para la 1" as a pickup time — found with the sample line "Don Lucho... a la 1": Spanish uses the singular for one o'clock.
+- The language is saved with the dinner; the Welcome screen starts in English each visit — a real dinner and the sample both reopen in the language they were left in, which is what the organizer needs on the night.
+- Switching language on the sample loads the Spanish sample pollada (soles, Yape, Plin, Peruvian names) instead of relabeling the American dinner — a spaghetti dinner priced in soles would be invented data.
+- In Español, "pay at pickup" rows show "en efectivo" as the method, and the undo buttons show "Deshacer" (screen readers still hear "Deshacer recojo a ...") — the longer Spanish labels pushed the ledger rows past the panel at 1440 px.

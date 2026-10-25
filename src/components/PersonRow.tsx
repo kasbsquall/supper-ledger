@@ -91,7 +91,7 @@ export function PersonRow({ person, dinner, index, onAction, onEdit }: Props) {
       <td className="c-pickup">
         <span className="ico-t num">
           <Clock weight="light" className="ico" aria-hidden="true" />
-          {formatTime(person.slot)}
+          {formatTime(person.slot, dinner.lang)}
         </span>
         {person.noTimeGiven && <span className="note">{t.noTimeGiven}</span>}
       </td>
@@ -110,19 +110,17 @@ export function PersonRow({ person, dinner, index, onAction, onEdit }: Props) {
               {sr}
             </button>
           ) : canUndoPaid ? (
-            <button type="button" className="act" onClick={() => onAction("undoPaid", person)}>
+            <button type="button" className="act" aria-label={`${t.actUndoPaid}${t.forPerson(person.name)}`} title={t.actUndoPaid} onClick={() => onAction("undoPaid", person)}>
               <ArrowCounterClockwise weight="light" className="ico" aria-hidden="true" />
-              <span className="lbl">{t.actUndoPaid}</span>
-              {sr}
+              <span className="lbl">{t.actUndoPaidShort}</span>
             </button>
           ) : (
             <span className="act-gap" aria-hidden="true" />
           )}
           {person.pickedUp ? (
-            <button type="button" className="act" onClick={() => onAction("undoPicked", person)}>
+            <button type="button" className="act" aria-label={`${t.actUndoPicked}${t.forPerson(person.name)}`} title={t.actUndoPicked} onClick={() => onAction("undoPicked", person)}>
               <ArrowCounterClockwise weight="light" className="ico" aria-hidden="true" />
-              <span className="lbl">{t.actUndoPicked}</span>
-              {sr}
+              <span className="lbl">{t.actUndoPickedShort}</span>
             </button>
           ) : (
             <button type="button" className="act" onClick={() => onAction("picked", person)}>
@@ -189,7 +187,7 @@ function EditRow({ person, dinner, onSave, onCancel }: EditProps) {
             <span>{t.editPickup}</span>
             <select value={slot} onChange={(e) => setSlot(e.target.value)}>
               {dinner.slots.map((s) => (
-                <option key={s} value={s}>{formatTime(s)}</option>
+                <option key={s} value={s}>{formatTime(s, dinner.lang)}</option>
               ))}
             </select>
           </label>

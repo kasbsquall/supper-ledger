@@ -17,7 +17,7 @@ export function SlotList({ slots, lang }: Props) {
       <div className="phead">
         <CookingPot weight="light" className="ico" aria-hidden="true" />
         <h2 id="slots-h">{t.slotsHeading}</h2>
-        <span className="aside">{t.cookCount}</span>
+        {t.cookCount && <span className="aside">{t.cookCount}</span>}
       </div>
       <ul className="slots">
         {slots.map((s, i) => {
@@ -27,7 +27,7 @@ export function SlotList({ slots, lang }: Props) {
             <li className="slot" key={s.slot}>
               <span className="time">
                 <Clock weight="light" className="ico" aria-hidden="true" />
-                {formatTime(s.slot)}
+                {formatTime(s.slot, lang)}
               </span>
               {s.plates > 0 ? (
                 <span className="cook">
@@ -38,7 +38,7 @@ export function SlotList({ slots, lang }: Props) {
                 <span className="cook none">{t.noPlatesYet}</span>
               )}
               {s.plates > 0 && <span className="bar">
-                <span className="meter" role="meter" aria-valuemin={0} aria-valuemax={s.plates} aria-valuenow={s.pickedUp} aria-label={`${formatTime(s.slot)} ${t.pickedUpCount}`}>
+                <span className="meter" role="meter" aria-valuemin={0} aria-valuemax={s.plates} aria-valuenow={s.pickedUp} aria-label={`${formatTime(s.slot, lang)} ${t.pickedUpCount}`}>
                   <i style={{ transform: `scaleX(${f})`, transitionDelay: `${i * 70}ms` }} />
                 </span>
                 <span className={`picked${s.pickedUp ? "" : " none"}`}>

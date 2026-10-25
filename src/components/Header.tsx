@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Flask, HandCoins, Plus, Tag } from "@phosphor-icons/react";
 import type { Dinner, Lang } from "../ledger/types";
 import { dict, formatMoney } from "../i18n";
+import { LanguageSwitch } from "./LanguageSwitch";
 
 // The tomato-red header band shared by every screen. spec.md > Look and Feel.
 
@@ -21,6 +22,7 @@ export function Brand({ lang }: { lang: Lang }) {
 
 type Props = {
   lang: Lang;
+  onLangChange: (lang: Lang) => void;
   dinner?: Dinner;
   /** Right side of the top bar. */
   actions?: ReactNode;
@@ -29,7 +31,7 @@ type Props = {
   children?: ReactNode;
 };
 
-export function Header({ lang, dinner, actions, onStartOwn, children }: Props) {
+export function Header({ lang, onLangChange, dinner, actions, onStartOwn, children }: Props) {
   const t = dict(lang);
   return (
     <header className="band">
@@ -37,6 +39,7 @@ export function Header({ lang, dinner, actions, onStartOwn, children }: Props) {
         <div className="top">
           <Brand lang={lang} />
           <span className="spacer" />
+          <LanguageSwitch lang={lang} onChange={onLangChange} />
           {actions}
         </div>
         {dinner?.isSample && (

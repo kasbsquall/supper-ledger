@@ -7,7 +7,7 @@ import { formatMoney, formatTime } from "../i18n";
  */
 export function reminderText(person: Person, dinner: Dinner): string {
   const owed = formatMoney(balance(person, dinner), dinner.lang);
-  const time = formatTime(person.slot);
+  const time = formatTime(person.slot, dinner.lang);
   if (dinner.lang === "es") {
     const platos = `${person.plates} ${person.plates === 1 ? "plato" : "platos"}`;
     const pago = dinner.payTo ? ` Puedes yapear a ${dinner.payTo} o pagar al recoger.` : " Puedes pagar al recoger.";

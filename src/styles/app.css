@@ -213,7 +213,7 @@ th:last-child,td:last-child{padding-right:20px}
 }
 @media (max-width:1100px){
   .acts{grid-template-columns:repeat(4,auto)}
-  .act .lbl{display:none}
+  .act .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .act{width:34px;padding:0}
 }
 @media (max-width:820px){
@@ -226,7 +226,7 @@ th:last-child,td:last-child{padding-right:20px}
   .fig{font-size:clamp(64px,19vw,96px)}
   .stats{margin-top:6px}
   .top{height:58px;gap:10px}
-  .link-set .lbl{display:none}
+  .link-set .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .link-set{padding:8px}
   .btn-ghost{margin-left:0}
   .dinner{padding:26px 0 24px}
@@ -251,7 +251,7 @@ th:last-child,td:last-child{padding-right:20px}
   .c-acts{grid-column:1 / -1}
   .acts{grid-template-columns:1fr 1fr 1fr 40px;justify-content:stretch}
   .act{width:auto;height:40px;padding:0 6px}
-  .act .lbl{display:inline}
+  .act .lbl{position:static;width:auto;height:auto;overflow:visible;clip:auto}
   .act[hidden]{display:none}
   .act.pay{grid-column:1}.act[data-a="picked"]{grid-column:2}.act[data-a="remind"]{grid-column:3}.act.icon{grid-column:4}
   .paste-row{flex-direction:column}
@@ -332,7 +332,7 @@ button.link-set{border:0;background:transparent;cursor:pointer;font:inherit;font
 .act-gap{display:block}
 .acts{grid-template-columns:repeat(4,auto)}
 @media (min-width:1281px){.acts{grid-template-columns:100px 120px 112px 34px}}
-@media (max-width:1280px) and (min-width:821px){.act .lbl{display:none}.acts .act{width:34px;padding:0}.acts{grid-template-columns:repeat(4,34px)}}
+@media (max-width:1280px) and (min-width:821px){.act .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.acts .act{width:34px;padding:0}.acts{grid-template-columns:repeat(4,34px)}}
 tr.editing td{padding:14px 24px;background:color-mix(in oklab,var(--mostaza) 12%,var(--crema))}
 .edit-form{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
 .edit-form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--tinta-2)}

@@ -1,12 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { Clock, Plus, Trash, Warning, X } from "@phosphor-icons/react";
 import type { DinnerSettings } from "../ledger/dinner";
+import type { Lang } from "../ledger/types";
 import { currencySymbol, dict } from "../i18n";
 
 // Setup and Dinner settings. Implements prd.md > The Core Journey (step 2) and prd.md > States and Boundaries (reset).
 
 type Props = {
   initial: DinnerSettings;
+  /** Interface language; the dinner is saved in it. */
+  lang: Lang;
   isEditing: boolean;
   onSave: (settings: DinnerSettings) => void;
   onCancel: () => void;
@@ -25,9 +28,9 @@ function fromCents(cents: number): string {
   return cents ? String(cents / 100) : "";
 }
 
-export function Setup({ initial, isEditing, onSave, onCancel, onDelete }: Props) {
-  const t = dict(initial.lang);
-  const symbol = currencySymbol(initial.lang);
+export function Setup({ initial, lang, isEditing, onSave, onCancel, onDelete }: Props) {
+  const t = dict(lang);
+  const symbol = currencySymbol(lang);
   const [name, setName] = useState(initial.name);
   const [price, setPrice] = useState(fromCents(initial.pricePerPlate));
   const [goal, setGoal] = useState(fromCents(initial.goal));
@@ -46,7 +49,7 @@ export function Setup({ initial, isEditing, onSave, onCancel, onDelete }: Props)
     if (filled.length === 0) next.slots = t.errorSlots;
     setErrors(next);
     if (Object.keys(next).length) return;
-    onSave({ name, pricePerPlate: toCents(price), goal: toCents(goal), slots: filled, payTo, lang: initial.lang });
+    onSave({ name, pricePerPlate: toCents(price), goal: toCents(goal), slots: filled, payTo, lang });
   }
 
   return (

@@ -1,7 +1,8 @@
 import type { Lang } from "../ledger/types";
 import { en, type Dict } from "./en";
+import { es } from "./es";
 
-const DICTS: Record<Lang, Dict> = { en, es: en };
+const DICTS: Record<Lang, Dict> = { en, es };
 
 export function dict(lang: Lang): Dict {
   return DICTS[lang];
@@ -27,10 +28,11 @@ export function currencySymbol(lang: Lang): string {
   return part?.value ?? "$";
 }
 
-/** "18:00" becomes "6:00 pm". */
-export function formatTime(clock: string): string {
+/** "18:00" becomes "6:00 pm" (English) or "6:00 p. m." (Spanish, Peru). */
+export function formatTime(clock: string, lang: Lang = "en"): string {
   const [h, m] = clock.split(":").map(Number);
   if (Number.isNaN(h)) return clock;
   const hour = h % 12 === 0 ? 12 : h % 12;
-  return `${hour}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+  const period = lang === "es" ? (h < 12 ? "a. m." : "p. m.") : h < 12 ? "am" : "pm";
+  return `${hour}:${String(m).padStart(2, "0")} ${period}`;
 }

@@ -42,7 +42,8 @@ const EN: Words = {
 
 const ES: Words = {
   orderNouns: "platos?|tickets?|entradas?|porciones?|polladas?|tarjetas?|pedidos?",
-  payVerbs: "yape[oó]|pag[oó]|plin(e[oó])?|mand[oó]|envi[oó]|transfiri[oó]|deposit[oó]",
+  // Non-capturing groups only: findPayment reads the text after the verb from group 1.
+  payVerbs: "yape[oó]|pag[oó]|plin(?:e[oó])?|mand[oó]|envi[oó]|transfiri[oó]|deposit[oó]",
   paidInFull: /(?<![\p{L}\d])(ya pag[oó]|pag[oó] (todo|completo|el resto|lo que (falta|faltaba))|yape[oó] (todo|el resto)|cancel[oó])(?![\p{L}\d])/iu,
   payLater: /\b(paga al recoger|pago al recoger|paga en la puerta|efectivo al recoger|contra entrega|paga cuando recoja|pagar[aá] al recoger)\b/i,
   nameStops: new Set([
@@ -54,7 +55,7 @@ const ES: Words = {
     [/\bplin/i, "plin"],
     [/\befectivo|\bcash\b/i, "cash"],
   ],
-  timeLead: "recoge|recoger|recojo|a las|las|@",
+  timeLead: "recoge|recoger|recojo|para las|para la|a las|a la|@",
 };
 
 const WORDS: Record<Lang, Words> = { en: EN, es: ES };
