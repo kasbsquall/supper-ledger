@@ -66,10 +66,10 @@ Build mode: fast (chosen by the learner: "Arranca el build en modo rápido.")
 
 - [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
 - [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: not started
-Route and stops: not started
+Activity and evidence: brief recap (learner asked for autonomy); practice grounded in test 26 catching the capture-group bug in `src/ledger/parse.ts`
+Route and stops: reference route in the map (PasteBox `handleSubmit`, parse.ts `readLine`, apply.ts `applyPaste`), not toured together
 Edit outcome: not started
 Reflection: not started
 Activity mode: not started
