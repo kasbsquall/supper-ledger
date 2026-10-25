@@ -1,0 +1,9 @@
+/devpost/learner-profile.md
+.env
+.env.*
+!.env.example
+node_modules/
+.ui-direcciones/
+.playwright-mcp/
+dist/
+*.tsbuildinfo

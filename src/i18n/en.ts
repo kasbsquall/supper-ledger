@@ -1,0 +1,82 @@
+// Every interface string in English. es.ts mirrors these keys. Implements prd.md > Language and currency.
+export const en = {
+  locale: "en-US",
+  currency: "USD",
+  brand: "Supper Ledger",
+  boardLabel: "Supper Ledger, board",
+  language: "Language",
+
+  welcomeTitle: "The night-of ledger for your benefit dinner",
+  welcomeBody: "Paste the group chat. See who paid, who still owes, and how many plates to cook for each pickup time.",
+  trySample: "Try the sample dinner",
+  privacyNote: "No account. Everything stays on this device.",
+
+  sampleChip: "Sample data",
+  sampleNote: "A fictional dinner to show how it works",
+
+  aPlate: "a plate",
+  payTo: "Pay to",
+
+  goalHeading: "Money collected against the goal",
+  thermometer: "Goal thermometer",
+  collectedOf: "collected of",
+  goal: "goal",
+  toGo: "to go",
+  goalReached: "Goal reached",
+  now: "Now",
+  platesSold: "plates sold",
+  platesPaid: "plates paid",
+  stillOwed: "still owed",
+  people: "people",
+  credit: "credit",
+
+  slotsHeading: "Plates per pickup slot",
+  cookCount: "cook count",
+  platesToCook: "plates to cook",
+  pickedUpCount: "picked up",
+
+  pasteHeading: "Group chat",
+  pasteLabel: "Paste messages from the group chat",
+  pastePlaceholder: "Aunt Linda 5 tickets, sent 2 on Venmo",
+  addToLedger: "Add to ledger",
+  readLines: (lines: number) => `Read ${lines} ${lines === 1 ? "line" : "lines"}:`,
+  readSummary: (orders: number, payments: number, notRead: number) =>
+    `${orders} ${orders === 1 ? "order" : "orders"}, ${payments} ${payments === 1 ? "payment" : "payments"}. ${notRead} not read.`,
+  alreadyAdded: (n: number) => `${n} already in the ledger, skipped.`,
+  notReadLabel: "Not read:",
+  nothingRead: "Nothing here looked like an order or a payment, so the ledger didn't change. It understands lines like:",
+
+  ledgerHeading: "Ledger",
+  colName: "Name",
+  colPlates: "Plates",
+  colPaid: "Paid",
+  colBalance: "Balance",
+  colMethod: "Method",
+  colPickup: "Pickup",
+  colStatus: "Status",
+  owes: "owes",
+  settled: "paid",
+  noTimeGiven: "no time given",
+  noMethod: "No method given",
+  statusOwes: "Owes",
+  statusPaid: "Paid",
+  statusPayAtPickup: "Pays at pickup",
+  statusPickedUp: "Picked up",
+  statusPickedUpOwes: "Picked up, owes",
+  statusCredit: "Paid extra",
+  emptyLedger: "Paste your first messages to start the ledger.",
+
+  methods: {
+    venmo: "Venmo",
+    zelle: "Zelle",
+    cashapp: "Cash App",
+    cash: "Cash",
+    yape: "Yape",
+    plin: "Plin",
+  },
+  payAtPickupMethod: "cash at pickup",
+  plates: (n: number) => `${n} ${n === 1 ? "plate" : "plates"}`,
+  peopleCount: (n: number) => `${n} ${n === 1 ? "person" : "people"}`,
+};
+
+export type Dict = typeof en;
