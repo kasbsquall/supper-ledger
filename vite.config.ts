@@ -6,6 +6,6 @@ export default defineConfig({
   base: "/supper-ledger/",
   plugins: [react()],
   test: {
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "relay/**/*.test.ts"],
   },
 });

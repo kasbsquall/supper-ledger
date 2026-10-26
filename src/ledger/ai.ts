@@ -17,16 +17,25 @@ export interface Suggestion {
   rewrite: string | null;
 }
 
-/** A message-creating function, so tests can stand in for the API. */
-export type CreateMessage = (params: Record<string, unknown>) => Promise<{ stop_reason?: string | null; content: Array<{ type: string; text?: string }> }>;
-
-// Kept in memory only: the key is gone when the page closes, and never written to storage.
-let sessionKey = "";
-export function getSessionKey(): string {
-  return sessionKey;
+/** The part of the model's answer the app reads. */
+export interface ModelReply {
+  stop_reason?: string | null;
+  content: Array<{ type: string; text?: string }>;
 }
-export function setSessionKey(key: string): void {
-  sessionKey = key.trim();
+
+/** Asks the model about some lines, so tests can stand in for the relay. */
+export type AskModel = (lines: string[], lang: Lang) => Promise<ModelReply>;
+
+/** The relay holds the API key; the browser only sends the lines. Source in relay/worker.ts. */
+export const RELAY_URL = "https://supper-ledger-ai.kevin2005-10.workers.dev";
+
+// Limits the relay enforces, so the app only offers what it will accept.
+export const AI_MAX_LINES = 10;
+export const AI_MAX_LINE_CHARS = 300;
+
+/** The not-read lines that can go to the AI: the first ten short enough to send. */
+export function askableLines(notRead: string[]): string[] {
+  return notRead.filter((line) => line.length <= AI_MAX_LINE_CHARS).slice(0, AI_MAX_LINES);
 }
 
 const FORMS: Record<Lang, string> = {
@@ -80,8 +89,7 @@ export function buildRequest(lines: string[], lang: Lang): Record<string, unknow
   const numbered = lines.map((line, i) => `${i}: ${line}`).join("\n");
   return {
     model: AI_MODEL,
-    max_tokens: 4000,
-    betas: ["server-side-fallback-2026-07-01"],
+    max_tokens: 3000,
     fallbacks: "default",
     system: SYSTEM,
     output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
@@ -112,29 +120,31 @@ export function parseSuggestions(text: string, lines: string[], lang: Lang): Sug
 }
 
 export class AiReadError extends Error {
-  constructor(readonly kind: "key" | "refused" | "network") {
+  constructor(readonly kind: "busy" | "refused" | "network") {
     super(kind);
   }
 }
 
-export async function suggestReadings(lines: string[], lang: Lang, create: CreateMessage): Promise<Suggestion[]> {
-  const response = await create(buildRequest(lines, lang));
+export async function suggestReadings(lines: string[], lang: Lang, ask: AskModel): Promise<Suggestion[]> {
+  const response = await ask(lines, lang);
   if (response.stop_reason === "refusal") throw new AiReadError("refused");
   const text = response.content.find((b) => b.type === "text")?.text ?? "";
   return parseSuggestions(text, lines, lang);
 }
 
-/** The real API call with the organizer's own key, loaded only when they ask for it. */
-export async function anthropicCreate(apiKey: string): Promise<CreateMessage> {
-  const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  // The key belongs to the organizer and stays in their browser; there is no server to hide it on.
-  const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true, maxRetries: 1 });
-  return async (params) => {
-    try {
-      return (await client.beta.messages.create(params as never)) as never;
-    } catch (error) {
-      if (error instanceof Anthropic.AuthenticationError || error instanceof Anthropic.PermissionDeniedError) throw new AiReadError("key");
-      throw new AiReadError("network");
-    }
-  };
-}
+/** The real call, through the relay. A 429 means a limit was reached for now. */
+export const relayAsk: AskModel = async (lines, lang) => {
+  let response: Response;
+  try {
+    response = await fetch(RELAY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lines, lang }),
+    });
+  } catch {
+    throw new AiReadError("network");
+  }
+  if (response.status === 429) throw new AiReadError("busy");
+  if (!response.ok) throw new AiReadError("network");
+  return (await response.json()) as ModelReply;
+};

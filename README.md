@@ -5,7 +5,7 @@
 **Live app:** https://kasbsquall.github.io/supper-ledger/
 **Demo video (1:38):** https://youtu.be/NBPla7nmcQ8
 
-No sign-up and no server. Everything stays in the browser on the organizer's phone, and AI is there only when the organizer asks for it.
+No sign-up and no account. Everything stays in the browser on the organizer's phone, and AI is there only when the organizer asks for it.
 
 ![Pasting the newest chat messages: the thermometer climbs from $1,650 to $1,995](docs/paste.gif)
 
@@ -18,7 +18,7 @@ The relative who ends up running the dinner: one person, often not technical, ke
 1. Open the live app and press **Try the sample dinner**. The board is labeled "Sample data": it is a fictional spaghetti dinner already in progress.
 2. The newest chat messages wait in the paste box. Press **Add to ledger** and watch the thermometer go from $1,650 to $1,995.
 3. Type a line of your own, for example `Grandpa Joe 2 plates @ 7, zelled $30`, and add it. He lands in the 7:00 pm slot, paid in full.
-4. Type a line the rules can't read, like `Grandma Rose wants a couple of plates, she'll venmo you $30 tonight`, then press **Ask AI about this line** with your own Anthropic API key. The AI suggests `Grandma Rose 2 plates, paid $30 on Venmo`, and it only counts when you press **Add**.
+4. Type a line the rules can't read, like `Grandma Rose wants a couple of plates, she'll venmo you $30 tonight`, then press **Ask AI about this line**. No key needed. The AI suggests `Grandma Rose 2 plates, paid $30 on Venmo`, and it only counts when you press **Add**.
 5. At the pickup table, use **Paid**, **Picked up** and **Reminder** on any row. Every action can be undone.
 6. Switch to **ES** for the Spanish version, with soles, Yape and Plin and a sample pollada.
 
@@ -54,11 +54,11 @@ A line it can't read is shown back to the organizer, word for word, and the ledg
 
 ### When the rules can't read a line, AI can help
 
-This part is optional. For the lines left in "Not read", the organizer can ask AI. Only those lines go to Anthropic, with the organizer's own API key, which stays in memory while the page is open and is never saved. The model rewrites each line into a form the rule-based reader already knows; the reader still decides what it means, and nothing counts until the organizer presses **Add**. A line like "who's bringing napkins?" comes back as "Not an order or a payment".
+This part is optional. For the lines left in "Not read", the organizer can ask AI. Only those lines go to Anthropic, through a small relay that holds the API key, so nobody has to bring their own. The relay keeps none of the lines. The model rewrites each line into a form the rule-based reader already knows; the reader still decides what it means, and nothing counts until the organizer presses **Add**. A line like "who's bringing napkins?" comes back as "Not an order or a payment".
 
 <img src="docs/ai-suggest.png" alt="AI suggestions: who's bringing napkins? is not an order or a payment; Grandma Rose wants a couple of plates, she'll venmo you $30 tonight reads as Grandma Rose 2 plates, paid $30 on Venmo, with Add and Skip buttons" width="520">
 
-The code is in `src/ledger/ai.ts` (official Anthropic SDK, loaded only when asked, model `claude-opus-5-5` at low effort with structured JSON output).
+The code is in `src/ledger/ai.ts` (model `claude-opus-5-5` at low effort with structured JSON output) and the relay in `relay/worker.ts`, a Cloudflare Worker. The relay builds the prompt itself, so a caller can only ask about chat lines. It answers only the live site, takes 1 to 10 lines of up to 300 characters, allows 6 calls a minute and 30 a day per address and 100 a day in total, and logs nothing. The only thing it keeps is a daily count under a hashed address, which expires after two days.
 
 ## Private by design
 
@@ -84,7 +84,7 @@ npm test
 npm run build
 ```
 
-`npm test` runs 35 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
+`npm test` runs 38 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
 
 ## How it was planned
 
@@ -98,7 +98,7 @@ This project was built with the Devpost Build With AI: Basics learning pack. The
 
 ## Built with
 
-Vite, React and TypeScript, tested with Vitest. Optional AI reading with the Anthropic API through the official TypeScript SDK. Icons: Phosphor (MIT). Animated figures: Number Flow (MIT). Font: Commissioner (SIL Open Font License). Sounds: Kenney Interface Sounds (CC0, see `public/sfx/LICENSE-kenney.txt`).
+Vite, React and TypeScript, tested with Vitest. Optional AI reading with the Anthropic Messages API, through a Cloudflare Worker built with Rolldown. Icons: Phosphor (MIT). Animated figures: Number Flow (MIT). Font: Commissioner (SIL Open Font License). Sounds: Kenney Interface Sounds (CC0, see `public/sfx/LICENSE-kenney.txt`).
 
 ## License
 

@@ -6,7 +6,7 @@ status: approved
 # Supper Ledger — Technical Spec
 
 ## How This Works, In Plain Language
-Supper Ledger is a single web page that runs entirely in the browser. There is no server and no account.
+Supper Ledger is a single web page that runs entirely in the browser, with no account. The only server is a small optional relay for the AI reading, which holds the API key and keeps none of the lines.
 
 - **The reader** is a small piece of code that takes the pasted chat text, looks at it line by line, and turns each line it understands into an order ("5 plates for Aunt Linda") or a payment ("Aunt Linda paid $30 by Venmo"). Lines it doesn't understand are kept aside, untouched.
 - **The ledger** is the list of people with their plates, what they paid, their pickup time, and whether they picked up. Every paste and every tap produces a new version of the ledger.
@@ -168,7 +168,7 @@ app/
 ## External Services and Dependencies
 - **GitHub Pages and GitHub Actions** (only if deployment is approved): free for public repositories; no keys in the code. The workflow uses the official `actions/upload-pages-artifact` and `actions/deploy-pages` actions. Docs: https://docs.github.com/en/pages
 - **Clipboard API** in the browser (`navigator.clipboard.writeText`) for reminders. Needs HTTPS or localhost, which both the live link and the dev server provide. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
-- **Anthropic Messages API**, only when the organizer asks AI about not-read lines, through the official SDK (`@anthropic-ai/sdk`, loaded on demand) with the organizer's own key. Model `claude-opus-5-5` at low effort, structured JSON output, server-side fallbacks on a refusal. Cost is a few lines per request, on the organizer's key. Added after the build (`prd.md > Asking AI about lines it could not read`).
+- **Anthropic Messages API**, only when the organizer asks AI about not-read lines, through a relay (`relay/worker.ts`, a Cloudflare Worker) that holds the API key as a secret and builds the prompt itself. Model `claude-opus-5-5` at low effort, structured JSON output, server-side fallbacks on a refusal. Limits: only the live site's origin, 1 to 10 lines of up to 300 characters, 6 calls a minute and 30 a day per address, 100 a day in total; no logs, only a daily count under a hashed address. Added after the build (`prd.md > Asking AI about lines it could not read`).
 - No other services, APIs, or costs.
 
 ## Important Failure Modes
@@ -177,7 +177,7 @@ app/
 - **Local storage empty, full, or unreadable** (private window, cleared data) → the app starts at Welcome without crashing; when saving fails, a quiet notice says changes won't be kept on this device.
 
 ## What Was Simplified and Why
-- **Rule-based reader** instead of an AI model reading free-form messages: no key, no network, instant, and testable line by line. An optional call to a language model with the organizer's own key, for the lines the rules can't read, was added after the build; the rules still decide what each line means.
+- **Rule-based reader** instead of an AI model reading free-form messages: no key, no network, instant, and testable line by line. An optional call to a language model through a small relay, for the lines the rules can't read, was added after the build; the rules still decide what each line means.
 - **One device, local storage** instead of a shared online ledger: no accounts and private by default. The fuller version would need sign-in and sync between relatives.
 - **One price per plate**, as agreed in `prd.md > Product Decisions`.
 

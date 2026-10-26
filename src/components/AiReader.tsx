@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { CheckCircle, CircleNotch, Key, Plus, Sparkle, WarningCircle, X } from "@phosphor-icons/react";
+import { useEffect, useRef, useState } from "react";
+import { CheckCircle, CircleNotch, Plus, Sparkle, WarningCircle, X } from "@phosphor-icons/react";
 import type { Lang } from "../ledger/types";
-import { AiReadError, anthropicCreate, getSessionKey, setSessionKey, suggestReadings, type Suggestion } from "../ledger/ai";
+import { AiReadError, askableLines, relayAsk, suggestReadings, type Suggestion } from "../ledger/ai";
 import { dict } from "../i18n";
 
 // Implements prd.md > Asking AI about lines it could not read. Optional: nothing here runs
@@ -14,12 +14,11 @@ type Props = {
   onAccept: (line: string, rewrite: string) => void;
 };
 
-type Phase = "idle" | "key" | "loading" | "done" | "error";
+type Phase = "idle" | "loading" | "done" | "error";
 
 export function AiReader({ lang, lines, onAccept }: Props) {
   const t = dict(lang);
   const [phase, setPhase] = useState<Phase>("idle");
-  const [keyInput, setKeyInput] = useState("");
   const [error, setError] = useState<AiReadError["kind"]>("network");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [resolved, setResolved] = useState<Record<string, "added" | "skipped">>({});
@@ -27,35 +26,20 @@ export function AiReader({ lang, lines, onAccept }: Props) {
   useEffect(() => () => {
     alive.current = false;
   }, []);
+  const askable = askableLines(lines);
 
-  async function read(apiKey: string) {
+  async function read() {
     setPhase("loading");
     try {
-      const result = await suggestReadings(lines, lang, await anthropicCreate(apiKey));
+      const result = await suggestReadings(askable, lang, relayAsk);
       if (!alive.current) return;
       setSuggestions(result);
       setPhase("done");
     } catch (e) {
       if (!alive.current) return;
-      const kind = e instanceof AiReadError ? e.kind : "network";
-      if (kind === "key") setSessionKey("");
-      setError(kind);
+      setError(e instanceof AiReadError ? e.kind : "network");
       setPhase("error");
     }
-  }
-
-  function start() {
-    const saved = getSessionKey();
-    if (saved) void read(saved);
-    else setPhase("key");
-  }
-
-  function handleKey(e: FormEvent) {
-    e.preventDefault();
-    if (!keyInput.trim()) return;
-    setSessionKey(keyInput);
-    setKeyInput("");
-    void read(getSessionKey());
   }
 
   function accept(s: Suggestion) {
@@ -64,7 +48,7 @@ export function AiReader({ lang, lines, onAccept }: Props) {
     setResolved((r) => ({ ...r, [s.line]: "added" }));
   }
 
-  if (phase === "idle" && lines.length === 0) return null;
+  if (phase === "idle" && askable.length === 0) return null;
 
   if (phase === "idle" || phase === "error") {
     return (
@@ -72,32 +56,15 @@ export function AiReader({ lang, lines, onAccept }: Props) {
         {phase === "error" && (
           <p className="ai-note err" role="alert">
             <WarningCircle weight="light" className="ico" aria-hidden="true" />
-            {error === "key" ? t.aiErrKey : error === "refused" ? t.aiErrRefused : t.aiErrNetwork}
+            {error === "busy" ? t.aiErrBusy : error === "refused" ? t.aiErrRefused : t.aiErrNetwork}
           </p>
         )}
-        <button type="button" className="ai-btn" onClick={start}>
+        <button type="button" className="ai-btn solid" onClick={() => void read()}>
           <Sparkle weight="light" className="ico" aria-hidden="true" />
-          {t.aiAsk(lines.length)}
+          {t.aiAsk(askable.length)}
         </button>
         <p className="ai-note">{t.aiIntro}</p>
       </div>
-    );
-  }
-
-  if (phase === "key") {
-    return (
-      <form className="ai" onSubmit={handleKey}>
-        <label htmlFor="ai-key" className="ai-label">
-          <Key weight="light" className="ico" aria-hidden="true" />
-          {t.aiKeyLabel}
-        </label>
-        <div className="ai-keyrow">
-          <input id="ai-key" type="password" autoComplete="off" spellCheck={false} placeholder="sk-ant-..." value={keyInput} onChange={(e) => setKeyInput(e.target.value)} autoFocus />
-          <button type="submit" className="ai-btn solid" disabled={!keyInput.trim()}>{t.aiRead}</button>
-          <button type="button" className="ai-btn" onClick={() => setPhase("idle")}>{t.cancel}</button>
-        </div>
-        <p className="ai-note">{t.aiKeyNote}</p>
-      </form>
     );
   }
 
@@ -106,7 +73,7 @@ export function AiReader({ lang, lines, onAccept }: Props) {
       <div className="ai" aria-live="polite">
         <p className="ai-note busy">
           <CircleNotch weight="light" className="ico spin" aria-hidden="true" />
-          {t.aiReading(lines.length)}
+          {t.aiReading(askable.length)}
         </p>
       </div>
     );

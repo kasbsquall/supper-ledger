@@ -65,7 +65,7 @@ A line that names someone already in the ledger updates that person (more plates
 ### Asking AI about lines it could not read
 Source: `scope.md > Later` (optional AI parsing with the person's own API key), brought into the POC after the build at the learner's request ("dale lo de lectura con IA"). Optional: the app works fully without it.
 
-When a paste leaves lines in the "Not read" list, the organizer can ask AI about only those lines. They enter their own Anthropic API key, which is kept in memory while the page is open and never saved. The model only rewrites each line into a plain form the rule-based reader already understands; the reader still decides what the line means, and nothing counts until the organizer presses **Add** on each suggestion. A line the model cannot place is shown as "Not an order or a payment".
+When a paste leaves lines in the "Not read" list, the organizer can ask AI about only those lines. They press one button; no key is needed. The lines go through a small relay that holds the API key and keeps none of the lines, with limits so the cost stays capped. The model only rewrites each line into a plain form the rule-based reader already understands; the reader still decides what the line means, and nothing counts until the organizer presses **Add** on each suggestion. A line the model cannot place is shown as "Not an order or a payment".
 
 - As the organizer, I want help with the lines the reader couldn't read, without losing control of the ledger.
   - [ ] Only the not-read lines are sent, never the rest of the chat or the ledger.
@@ -114,7 +114,7 @@ Source: `scope.md > The Core Loop`.
 - **Over-payment:** if someone pays more than they owe, the row shows the extra as a credit, and the totals count only what is owed.
 - **Persistence:** the dinner is saved in this browser and is still there after closing and reopening the page. Other devices don't see it.
 - **Reset:** **Delete this dinner** in settings clears everything, after a confirmation.
-- **Privacy:** names and balances never leave the device; no account and no network calls are needed to use it. The only exception is optional: when the organizer asks AI about not-read lines, those lines alone go to Anthropic with the organizer's own key.
+- **Privacy:** names and balances never leave the device; no account and no network calls are needed to use it. The only exception is optional: when the organizer asks AI about not-read lines, those lines alone go to Anthropic through the relay, which stores none of them.
 
 ## Product Decisions
 

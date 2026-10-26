@@ -14,5 +14,5 @@
     "noEmit": true,
     "types": ["vitest/importMeta"]
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "relay", "vite.config.ts"]
 }

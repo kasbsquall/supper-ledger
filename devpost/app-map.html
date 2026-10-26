@@ -39,7 +39,7 @@
   <h2>The main pieces</h2>
   <ul>
     <li><b>The reader</b> (<code>src/ledger/parse.ts</code>) turns chat lines into orders and payments with plain rules, in English and Spanish. No AI model and no API key.</li>
-    <li><b>AI reading, optional</b> (<code>src/ledger/ai.ts</code>, <code>src/components/AiReader.tsx</code>) sends only the not-read lines to Anthropic with the organizer's own key. The model rewrites each line into a form the reader knows; the reader decides, and the organizer presses Add.</li>
+    <li><b>AI reading, optional</b> (<code>src/ledger/ai.ts</code>, <code>src/components/AiReader.tsx</code>) sends only the not-read lines to Anthropic through a small relay (<code>relay/worker.ts</code>) that holds the key, caps the use and keeps no lines. The model rewrites each line into a form the reader knows; the reader decides, and the organizer presses Add.</li>
     <li><b>The ledger</b> (<code>src/ledger/apply.ts</code>, <code>totals.ts</code>) merges what was read into the people list and adds up money, plates and slots. Every change returns a new copy.</li>
     <li><b>Storage</b> (<code>src/ledger/storage.ts</code>) keeps the ledger in the browser's local storage under <code>supper-ledger:v1</code>.</li>
     <li><b>The screens</b> (<code>src/App.tsx</code> and <code>src/components/</code>) show the welcome, setup and the board with the thermometer.</li>

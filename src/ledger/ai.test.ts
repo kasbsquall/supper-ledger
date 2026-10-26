@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AI_MODEL, AiReadError, buildRequest, parseSuggestions, suggestReadings, type CreateMessage } from "./ai";
+import { AI_MAX_LINES, AI_MODEL, AiReadError, askableLines, buildRequest, parseSuggestions, suggestReadings, type AskModel } from "./ai";
 import { applyPaste, applySuggestion } from "./apply";
 import { computeTotals } from "./totals";
 import { SAMPLE_CHAT_EN, sampleLedgerEn } from "../sample/sample-en";
@@ -10,7 +10,7 @@ const ROSE = "Grandma Rose wants a couple of plates, she'll venmo you $30 tonigh
 const ROSE_PLAIN = "Grandma Rose 2 plates, paid $30 on Venmo";
 const NAPKINS = "who's bringing napkins?";
 
-const answer = (readings: Array<{ index: number; rewrite: string }>): CreateMessage => async () => ({
+const answer = (readings: Array<{ index: number; rewrite: string }>): AskModel => async () => ({
   stop_reason: "end_turn",
   content: [{ type: "text", text: JSON.stringify({ readings }) }],
 });
@@ -50,11 +50,17 @@ describe("prd.md > Asking AI about lines it could not read", () => {
   });
 
   it("35. a refusal is reported as an error, never as an empty reading", async () => {
-    const refused: CreateMessage = async () => ({ stop_reason: "refusal", content: [] });
+    const refused: AskModel = async () => ({ stop_reason: "refusal", content: [] });
     await expect(suggestReadings([ROSE], "en", refused)).rejects.toBeInstanceOf(AiReadError);
     await expect(suggestReadings([ROSE, NAPKINS], "en", answer([{ index: 0, rewrite: ROSE_PLAIN }]))).resolves.toEqual([
       { line: ROSE, rewrite: ROSE_PLAIN },
       { line: NAPKINS, rewrite: null },
     ]);
+  });
+
+  it("36. at most ten lines are offered, and a line too long to send stays not read", () => {
+    const many = Array.from({ length: 14 }, (_, i) => `line ${i}`);
+    expect(askableLines(many)).toHaveLength(AI_MAX_LINES);
+    expect(askableLines([ROSE, "x".repeat(301), NAPKINS])).toEqual([ROSE, NAPKINS]);
   });
 });
