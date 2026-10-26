@@ -15,11 +15,12 @@ type Props = {
   initialPaste: string;
   pulseKey: number;
   onPaste: (text: string) => void;
+  onAcceptSuggestion: (line: string, rewrite: string) => void;
   onAction: (action: RowAction, person: Person) => void;
   onEdit: (person: Person, edit: PersonEdit) => void;
 };
 
-export function Board({ ledger, totals, initialPaste, pulseKey, onPaste, onAction, onEdit }: Props) {
+export function Board({ ledger, totals, initialPaste, pulseKey, onPaste, onAcceptSuggestion, onAction, onEdit }: Props) {
   const lang = ledger.dinner.lang;
   return (
     <main className="wrap">
@@ -27,7 +28,7 @@ export function Board({ ledger, totals, initialPaste, pulseKey, onPaste, onActio
         <GoalSummary totals={totals} lang={lang} pulseKey={pulseKey} />
         <div className="side">
           <SlotList slots={totals.slots} lang={lang} />
-          <PasteBox lang={lang} initialText={initialPaste} lastPaste={ledger.lastPaste} onAdd={onPaste} />
+          <PasteBox lang={lang} initialText={initialPaste} lastPaste={ledger.lastPaste} onAdd={onPaste} onAcceptSuggestion={onAcceptSuggestion} />
         </div>
       </div>
       <LedgerList dinner={ledger.dinner} people={ledger.people} counts={totals.counts} onAction={onAction} onEdit={onEdit} />

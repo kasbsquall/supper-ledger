@@ -1,4 +1,4 @@
-import { lineKey, readChat } from "./parse";
+import { lineKey, readChat, readLine } from "./parse";
 import type { Dinner, Ledger, Person, ReadLine } from "./types";
 
 /**
@@ -31,6 +31,29 @@ export function applyPaste(ledger: Ledger, text: string): Ledger {
     people,
     seen: [...seen],
     lastPaste: { lines: read.length + notRead.length, orders, payments, alreadyAdded, notRead },
+  };
+}
+
+/**
+ * Adds one line the organizer confirmed from an AI suggestion. The reader still reads the
+ * rewrite; the original chat line is what gets remembered, so pasting it again is skipped.
+ * Implements prd.md > Asking AI about lines it could not read.
+ */
+export function applySuggestion(ledger: Ledger, original: string, rewrite: string): Ledger {
+  const item = readLine(rewrite, ledger.dinner.lang);
+  const key = lineKey(original);
+  if (!item || ledger.seen.includes(key)) return ledger;
+  const last = ledger.lastPaste;
+  return {
+    ...ledger,
+    people: applyLine(ledger.people, { ...item, line: original }, ledger.dinner),
+    seen: [...ledger.seen, key],
+    lastPaste: last && {
+      ...last,
+      orders: last.orders + (item.plates !== undefined ? 1 : 0),
+      payments: last.payments + (item.payment ? 1 : 0),
+      notRead: last.notRead.filter((line) => line !== original),
+    },
   };
 }
 

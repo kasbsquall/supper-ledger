@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { ChatCircleText, CheckCircle, ClipboardText, Info, Question } from "@phosphor-icons/react";
 import type { Lang, LastPaste } from "../ledger/types";
 import { dict } from "../i18n";
+import { AiReader } from "./AiReader";
 
 // Implements prd.md > Reading pasted chat messages: the paste box and the result of the last paste.
 
@@ -10,17 +11,21 @@ type Props = {
   initialText: string;
   lastPaste?: LastPaste;
   onAdd: (text: string) => void;
+  onAcceptSuggestion: (line: string, rewrite: string) => void;
 };
 
-export function PasteBox({ lang, initialText, lastPaste, onAdd }: Props) {
+export function PasteBox({ lang, initialText, lastPaste, onAdd, onAcceptSuggestion }: Props) {
   const t = dict(lang);
   const [text, setText] = useState(initialText);
+  // A new paste starts a fresh AI reading.
+  const [pasteCount, setPasteCount] = useState(0);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!text.trim()) return;
     onAdd(text);
     setText("");
+    setPasteCount((n) => n + 1);
   }
 
   return (
@@ -42,6 +47,7 @@ export function PasteBox({ lang, initialText, lastPaste, onAdd }: Props) {
           </div>
         </div>
       </form>
+      {lastPaste && <AiReader key={pasteCount} lang={lang} lines={lastPaste.notRead} onAccept={onAcceptSuggestion} />}
     </section>
   );
 }

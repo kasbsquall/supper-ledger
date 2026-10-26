@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { GearSix, Warning } from "@phosphor-icons/react";
 import type { Lang, Ledger, Person } from "./ledger/types";
-import { applyPaste, editPerson, markPaid, setPickedUp, undoPaid, type PersonEdit } from "./ledger/apply";
+import { applyPaste, applySuggestion, editPerson, markPaid, setPickedUp, undoPaid, type PersonEdit } from "./ledger/apply";
 import { reminderText } from "./ledger/reminder";
 import { computeTotals } from "./ledger/totals";
 import { newDinner, settingsOf, updateDinner, type DinnerSettings } from "./ledger/dinner";
@@ -98,6 +98,15 @@ export function App() {
     setLedger(next);
   }
 
+  // prd.md > Asking AI about lines it could not read: the organizer confirmed one suggestion.
+  function handleSuggestion(line: string, rewrite: string) {
+    if (!ledger) return;
+    const next = applySuggestion(ledger, line, rewrite);
+    play(reachedGoal(ledger, next) ? "goal" : "paste");
+    if (computeTotals(next).collected > computeTotals(ledger).collected) setPulseKey((k) => k + 1);
+    setLedger(next);
+  }
+
   function say(kind: ToastKind, text: string) {
     setToast({ id: Date.now(), kind, text });
   }
@@ -175,7 +184,7 @@ export function App() {
           {t.notSaved}
         </p>
       )}
-      <Board key={ledger.dinner.name + ledger.dinner.isSample + lang} ledger={ledger} totals={computeTotals(ledger)} initialPaste={initialPaste} pulseKey={pulseKey} onPaste={handlePaste} onAction={handleAction} onEdit={handleEdit} />
+      <Board key={ledger.dinner.name + ledger.dinner.isSample + lang} ledger={ledger} totals={computeTotals(ledger)} initialPaste={initialPaste} pulseKey={pulseKey} onPaste={handlePaste} onAcceptSuggestion={handleSuggestion} onAction={handleAction} onEdit={handleEdit} />
       <Toast message={toast} onDone={clearToast} />
       {manualCopy && <CopyFallback text={manualCopy} lang={lang} onClose={() => setManualCopy(null)} />}
     </>

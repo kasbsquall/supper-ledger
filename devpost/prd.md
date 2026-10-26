@@ -62,6 +62,17 @@ A line that names someone already in the ledger updates that person (more plates
   - [ ] A line it can't read, such as `who's bringing napkins?`, appears in the "Not read" list with the original text, and nothing in the ledger changes because of it.
   - [ ] After each paste, a one-line summary says how many lines became orders, how many became payments, and how many were not read.
 
+### Asking AI about lines it could not read
+Source: `scope.md > Later` (optional AI parsing with the person's own API key), brought into the POC after the build at the learner's request ("dale lo de lectura con IA"). Optional: the app works fully without it.
+
+When a paste leaves lines in the "Not read" list, the organizer can ask AI about only those lines. They enter their own Anthropic API key, which is kept in memory while the page is open and never saved. The model only rewrites each line into a plain form the rule-based reader already understands; the reader still decides what the line means, and nothing counts until the organizer presses **Add** on each suggestion. A line the model cannot place is shown as "Not an order or a payment".
+
+- As the organizer, I want help with the lines the reader couldn't read, without losing control of the ledger.
+  - [ ] Only the not-read lines are sent, never the rest of the chat or the ledger.
+  - [ ] A suggestion appears only if the rule-based reader can read the rewrite; anything else stays not read.
+  - [ ] Pressing **Add** on `Grandma Rose wants a couple of plates, she'll venmo you $30 tonight` (suggested as `Grandma Rose 2 plates, paid $30 on Venmo`) adds 2 plates and $30, removes the line from "Not read", and pasting the same line again does not add it twice.
+  - [ ] A wrong key, no network or a refusal shows a message and leaves the ledger unchanged.
+
 ### The board
 Source: `scope.md > The Unique Kernel`.
 
@@ -103,7 +114,7 @@ Source: `scope.md > The Core Loop`.
 - **Over-payment:** if someone pays more than they owe, the row shows the extra as a credit, and the totals count only what is owed.
 - **Persistence:** the dinner is saved in this browser and is still there after closing and reopening the page. Other devices don't see it.
 - **Reset:** **Delete this dinner** in settings clears everything, after a confirmation.
-- **Privacy:** names and balances never leave the device; no account and no network calls are needed to use it.
+- **Privacy:** names and balances never leave the device; no account and no network calls are needed to use it. The only exception is optional: when the organizer asks AI about not-read lines, those lines alone go to Anthropic with the organizer's own key.
 
 ## Product Decisions
 
@@ -114,10 +125,9 @@ Source: `scope.md > The Core Loop`.
 - Assumption (agent proposal, approved by the learner with the PRD): Spanish mode uses soles and Yape/Plin to reflect the pollada origin from `scope.md > Inspiration & Identity`.
 
 ## What We're Building
-Welcome screen, setup, board, paste-and-read, per-person Paid and Picked up with undo, manual row edit, copy reminder, sample dinner, English/Spanish switch, browser persistence, and delete dinner.
+Welcome screen, setup, board, paste-and-read, optional AI reading of not-read lines, per-person Paid and Picked up with undo, manual row edit, copy reminder, sample dinner, English/Spanish switch, browser persistence, and delete dinner.
 
 ## Deferred From the POC
-- AI reading of free-form messages: needs the person's own API key and network calls; the rule-based reader proves the kernel without them.
 - Several organizers on one dinner: needs accounts and sync.
 - Printable pickup list: useful at the table, not needed to prove the loop.
 - Importing payment app exports: each app's file is different.

@@ -36,7 +36,7 @@ A judge opens the live link and taps "Try the sample dinner" (sample data, clear
 - English by default, Spanish toggle that switches currency and apps (USD with Venmo, PEN with Yape).
 
 ## Later
-- Optional AI parsing for free-form messages the rule-based parser can't read, using the person's own API key.
+(Optional AI parsing for free-form messages, with the person's own API key, moved into the POC after the build; see `prd.md > Asking AI about lines it could not read`.)
 - Several organizers editing the same dinner at once.
 - Printable pickup list for the table.
 - Import a payment app's export file.

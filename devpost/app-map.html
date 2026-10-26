@@ -34,11 +34,12 @@
 <body>
 <main>
   <h1>Supper Ledger app map</h1>
-  <p class="lede">A take-home guide to where things live. Supper Ledger is the night-of ledger for a benefit dinner: the organizer pastes the group chat and sees money against the goal, plates per pickup slot and who still owes. It runs entirely in the browser; nothing is sent anywhere.</p>
+  <p class="lede">A take-home guide to where things live. Supper Ledger is the night-of ledger for a benefit dinner: the organizer pastes the group chat and sees money against the goal, plates per pickup slot and who still owes. It runs entirely in the browser; nothing is sent anywhere unless the organizer asks AI about a line it could not read.</p>
 
   <h2>The main pieces</h2>
   <ul>
     <li><b>The reader</b> (<code>src/ledger/parse.ts</code>) turns chat lines into orders and payments with plain rules, in English and Spanish. No AI model and no API key.</li>
+    <li><b>AI reading, optional</b> (<code>src/ledger/ai.ts</code>, <code>src/components/AiReader.tsx</code>) sends only the not-read lines to Anthropic with the organizer's own key. The model rewrites each line into a form the reader knows; the reader decides, and the organizer presses Add.</li>
     <li><b>The ledger</b> (<code>src/ledger/apply.ts</code>, <code>totals.ts</code>) merges what was read into the people list and adds up money, plates and slots. Every change returns a new copy.</li>
     <li><b>Storage</b> (<code>src/ledger/storage.ts</code>) keeps the ledger in the browser's local storage under <code>supper-ledger:v1</code>.</li>
     <li><b>The screens</b> (<code>src/App.tsx</code> and <code>src/components/</code>) show the welcome, setup and the board with the thermometer.</li>

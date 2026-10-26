@@ -168,6 +168,7 @@ app/
 ## External Services and Dependencies
 - **GitHub Pages and GitHub Actions** (only if deployment is approved): free for public repositories; no keys in the code. The workflow uses the official `actions/upload-pages-artifact` and `actions/deploy-pages` actions. Docs: https://docs.github.com/en/pages
 - **Clipboard API** in the browser (`navigator.clipboard.writeText`) for reminders. Needs HTTPS or localhost, which both the live link and the dev server provide. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
+- **Anthropic Messages API**, only when the organizer asks AI about not-read lines, through the official SDK (`@anthropic-ai/sdk`, loaded on demand) with the organizer's own key. Model `claude-opus-5-5` at low effort, structured JSON output, server-side fallbacks on a refusal. Cost is a few lines per request, on the organizer's key. Added after the build (`prd.md > Asking AI about lines it could not read`).
 - No other services, APIs, or costs.
 
 ## Important Failure Modes
@@ -176,7 +177,7 @@ app/
 - **Local storage empty, full, or unreadable** (private window, cleared data) → the app starts at Welcome without crashing; when saving fails, a quiet notice says changes won't be kept on this device.
 
 ## What Was Simplified and Why
-- **Rule-based reader** instead of an AI model reading free-form messages: no key, no network, instant, and testable line by line. The fuller version would add an optional call to a language model with the organizer's own key for lines the rules can't read.
+- **Rule-based reader** instead of an AI model reading free-form messages: no key, no network, instant, and testable line by line. An optional call to a language model with the organizer's own key, for the lines the rules can't read, was added after the build; the rules still decide what each line means.
 - **One device, local storage** instead of a shared online ledger: no accounts and private by default. The fuller version would need sign-in and sync between relatives.
 - **One price per plate**, as agreed in `prd.md > Product Decisions`.
 

@@ -404,3 +404,36 @@ tr.editing td{padding:14px 24px;background:color-mix(in oklab,var(--mostaza) 12%
   .edit-form label:first-child{flex:1 1 100%}
   .acts{grid-template-columns:1fr 1fr 1fr 40px}
 }
+
+/* ---------- AI reading of lines the reader could not read (prd.md > Asking AI about lines it could not read) ---------- */
+.ai{margin:0 24px;padding:14px 0 22px;border-top:1px solid var(--linea)}
+.ai-btn{display:inline-flex;align-items:center;gap:6px;height:34px;border:1.5px solid var(--linea-2);background:var(--crema);color:var(--tinta);border-radius:var(--r-in);font:inherit;font-size:13.5px;font-weight:600;padding:0 11px;cursor:pointer;white-space:nowrap;transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .12s var(--ease)}
+.ai-btn .ico{font-size:16px}
+.ai-btn:hover{border-color:color-mix(in oklab,var(--tinta) 42%,transparent);background:var(--fondo)}
+.ai-btn:active{transform:scale(.97)}
+.ai-btn:focus-visible,.ai-keyrow input:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--mostaza) 70%,transparent)}
+.ai-btn.solid{background:var(--tinta);border-color:var(--tinta);color:var(--crema)}
+.ai-btn.solid:hover{background:var(--tomate-tinta);border-color:var(--tomate-tinta)}
+.ai-btn:disabled{opacity:.45;cursor:not-allowed}
+.ai-note{margin:7px 0 0;font-size:12.5px;line-height:1.4;color:var(--tinta-3);display:flex;gap:6px;align-items:flex-start}
+.ai-note .ico{font-size:16px;flex:none}
+.ai-note.err{margin:0 0 9px;color:var(--tomate-tinta)}
+.ai-note.busy{margin:0;color:var(--tinta-2)}
+.ai-label{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:13.5px;font-weight:600;color:var(--tinta-2)}
+.ai-label .ico{font-size:16px}
+.ai-keyrow{display:flex;gap:8px;flex-wrap:wrap}
+.ai-keyrow input{flex:1 1 180px;min-width:0;height:34px;font:inherit;font-size:16px;color:var(--tinta);background:var(--fondo);border:1.5px solid var(--linea-2);border-radius:var(--r-in);padding:0 11px}
+.ai-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ai-item{display:grid;gap:5px;padding:9px 11px;background:var(--fondo);border-radius:var(--r-in);font-size:13.5px;line-height:1.4}
+.ai-line{color:var(--tinta-2);font-style:normal}
+.ai-reads{color:var(--tinta-2)}
+.ai-reads strong{color:var(--tinta);font-weight:620}
+.ai-acts{display:flex;gap:8px;flex-wrap:wrap}
+.ai-done{display:inline-flex;align-items:center;gap:6px;color:var(--albahaca-tinta);font-weight:600}
+.ai-done .ico{font-size:16px}
+.ai-done.muted{color:var(--tinta-3);font-weight:500}
+@media (prefers-reduced-motion: no-preference){
+  .ai-item{animation:rise .24s var(--ease) both}
+  .spin{animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+}

@@ -5,7 +5,7 @@
 **Live app:** https://kasbsquall.github.io/supper-ledger/
 **Demo video:** coming soon
 
-No sign-up, no server and no API key. Everything stays in the browser on the organizer's phone.
+No sign-up and no server. Everything stays in the browser on the organizer's phone, and AI is there only when the organizer asks for it.
 
 ![Pasting the newest chat messages: the thermometer climbs from $1,650 to $1,995](docs/paste.gif)
 
@@ -18,8 +18,9 @@ The relative who ends up running the dinner: one person, often not technical, ke
 1. Open the live app and press **Try the sample dinner**. The board is labeled "Sample data": it is a fictional spaghetti dinner already in progress.
 2. The newest chat messages wait in the paste box. Press **Add to ledger** and watch the thermometer go from $1,650 to $1,995.
 3. Type a line of your own, for example `Grandpa Joe 2 plates @ 7, zelled $30`, and add it. He lands in the 7:00 pm slot, paid in full.
-4. At the pickup table, use **Paid**, **Picked up** and **Reminder** on any row. Every action can be undone.
-5. Switch to **ES** for the Spanish version, with soles, Yape and Plin and a sample pollada.
+4. Type a line the rules can't read, like `Grandma Rose wants a couple of plates, she'll venmo you $30 tonight`, then press **Ask AI about this line** with your own Anthropic API key. The AI suggests `Grandma Rose 2 plates, paid $30 on Venmo`, and it only counts when you press **Add**.
+5. At the pickup table, use **Paid**, **Picked up** and **Reminder** on any row. Every action can be undone.
+6. Switch to **ES** for the Spanish version, with soles, Yape and Plin and a sample pollada.
 
 <table>
   <tr>
@@ -51,9 +52,17 @@ A line it can't read is shown back to the organizer, word for word, and the ledg
 
 <img src="docs/not-read.png" alt="Read 9 lines: 6 orders, 6 payments, 1 not read. Not read: who's bringing napkins?" width="520">
 
+### When the rules can't read a line, AI can help
+
+This part is optional. For the lines left in "Not read", the organizer can ask AI. Only those lines go to Anthropic, with the organizer's own API key, which stays in memory while the page is open and is never saved. The model rewrites each line into a form the rule-based reader already knows; the reader still decides what it means, and nothing counts until the organizer presses **Add**. A line like "who's bringing napkins?" comes back as "Not an order or a payment".
+
+<img src="docs/ai-suggest.png" alt="AI suggestions: who's bringing napkins? is not an order or a payment; Grandma Rose wants a couple of plates, she'll venmo you $30 tonight reads as Grandma Rose 2 plates, paid $30 on Venmo, with Add and Skip buttons" width="520">
+
+The code is in `src/ledger/ai.ts` (official Anthropic SDK, loaded only when asked, model `claude-opus-5-5` at low effort with structured JSON output).
+
 ## Private by design
 
-The names and debts never leave the device. With the network switched off after the page loads, pasted lines still land, and the only network activity is the app asking for its own sound files.
+The names and debts never leave the device. With the network switched off after the page loads, pasted lines still land, and the only network activity is the app asking for its own sound files. The one exception is the optional AI reading above, which sends only the not-read lines, and only when the organizer asks.
 
 ## En español
 
@@ -75,7 +84,7 @@ npm test
 npm run build
 ```
 
-`npm test` runs 31 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
+`npm test` runs 35 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
 
 ## How it was planned
 
@@ -89,7 +98,7 @@ This project was built with the Devpost Build With AI: Basics learning pack. The
 
 ## Built with
 
-Vite, React and TypeScript, tested with Vitest. Icons: Phosphor (MIT). Animated figures: Number Flow (MIT). Font: Commissioner (SIL Open Font License). Sounds: Kenney Interface Sounds (CC0, see `public/sfx/LICENSE-kenney.txt`).
+Vite, React and TypeScript, tested with Vitest. Optional AI reading with the Anthropic API through the official TypeScript SDK. Icons: Phosphor (MIT). Animated figures: Number Flow (MIT). Font: Commissioner (SIL Open Font License). Sounds: Kenney Interface Sounds (CC0, see `public/sfx/LICENSE-kenney.txt`).
 
 ## License
 
