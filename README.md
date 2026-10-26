@@ -3,7 +3,7 @@
 **When a family sells plates to cover a hospital bill, the orders arrive as group-chat messages, and on the night one relative scrolls back and adds it all up by hand.** Supper Ledger reads the pasted chat and shows money collected against the goal, plates to cook for each pickup time, and who still owes.
 
 **Live app:** https://kasbsquall.github.io/supper-ledger/
-**Demo video:** coming soon
+**Demo video (1:38):** https://youtu.be/NBPla7nmcQ8
 
 No sign-up and no server. Everything stays in the browser on the organizer's phone, and AI is there only when the organizer asks for it.
 
