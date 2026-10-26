@@ -56,7 +56,7 @@ A line it can't read is shown back to the organizer, word for word, and the ledg
 
 This part is optional. For the lines left in "Not read", the organizer can ask AI. Only those lines go to Anthropic, through a small relay that holds the API key, so nobody has to bring their own. The relay keeps none of the lines. The model rewrites each line into a form the rule-based reader already knows; the reader still decides what it means, and nothing counts until the organizer presses **Add**. It keeps a promise apart from a payment: "she'll venmo you $30 tonight" reads as 2 plates still owed, while "she just venmoed you $30" reads as paid. A line like "who's bringing napkins?" comes back as "Not an order or a payment".
 
-<img src="docs/ai-suggest.png" alt="Group chat panel on the live site: Grandma Rose wants a couple of plates, she'll venmo you $30 tonight reads as Grandma Rose 2 plates, with Add and Skip buttons" width="520">
+<img src="docs/ai-suggest.png" alt="Group chat panel on the live site: Grandma Rose wants a couple of plates, she'll venmo you $30 tonight reads as Grandma Rose 2 plates, with Add and Skip buttons; who's bringing napkins? is not an order or a payment" width="520">
 
 The code is in `src/ledger/ai.ts` (model `claude-opus-5-5` at low effort with structured JSON output) and the relay in `relay/worker.ts`, a Cloudflare Worker. The relay builds the prompt itself, so a caller can only ask about chat lines. It answers only the live site, takes 1 to 10 lines of up to 300 characters, allows 6 calls a minute and 30 a day per address and 100 a day in total, and logs nothing. The only thing it keeps is a daily count under a hashed address, which expires after two days.
 
