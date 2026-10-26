@@ -122,4 +122,13 @@ describe("prd.md > The board", () => {
     expect(t.credit).toBe(2000);
     expect(t.counts.paid).toBe(1);
   });
+
+  it("30. a time after @ is read, with or without a space", () => {
+    expect(readLine("Grandpa Joe 2 plates @ 7, zelled $30", "en")).toMatchObject({ name: "Grandpa Joe", plates: 2, time: "19:00", method: "zelle", payment: { kind: "cents", cents: 3000 } });
+    expect(readLine("Joe 2 plates @7", "en")).toMatchObject({ time: "19:00" });
+  });
+
+  it("31. a quantity written as x2 stays out of the name", () => {
+    expect(readLine("Nina Brooks x2 plates, pickup 5:30, will pay at pickup", "en")).toMatchObject({ name: "Nina Brooks", plates: 2, time: "17:30", payAtPickup: true });
+  });
 });

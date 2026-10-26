@@ -44,7 +44,7 @@ npm test
 npm run build
 ```
 
-`npm test` runs 29 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
+`npm test` runs 31 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
 
 ## How it was planned
 

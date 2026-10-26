@@ -113,7 +113,8 @@ function splitName(text: string, w: Words): { name: string; rest: string } {
   const nameTokens: string[] = [];
   for (const token of tokens) {
     const bare = token.toLowerCase().replace(/[,.;!?]+$/, "");
-    if (/^[$\d]/.test(token) || /^s\/\d?/i.test(token) || w.nameStops.has(bare)) break;
+    // "x2" is a quantity, not part of the name.
+    if (/^[$\d]/.test(token) || /^x\d/i.test(token) || /^s\/\d?/i.test(token) || w.nameStops.has(bare)) break;
     if (!/^[\p{L}&'.-]/u.test(token)) break;
     nameTokens.push(token);
     if (/[,;:!?]$/.test(token)) break;
@@ -157,7 +158,8 @@ function findTime(text: string, w: Words): string | undefined {
   if (withPeriod) return toClock(Number(withPeriod[1]), Number(withPeriod[2] ?? 0), withPeriod[3].toLowerCase() === "p");
   const twentyFour = text.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
   if (twentyFour && Number(twentyFour[1]) >= 13) return toClock(Number(twentyFour[1]), Number(twentyFour[2]), false);
-  const led = text.match(new RegExp(`\\b(?:${w.timeLead})\\s+(\\d{1,2})(?::(\\d{2}))?\\b(?!\\s*(?:${w.orderNouns}))`, "i"));
+  // Letter-aware edge instead of \b, so "@ 7" and "@7" count as well as "at 7".
+  const led = text.match(new RegExp(`(?<![\\p{L}\\d])(?:${w.timeLead})\\s*(\\d{1,2})(?::(\\d{2}))?(?!\\d)(?!\\s*(?:${w.orderNouns}))`, "iu"));
   if (led) {
     const hour = Number(led[1]);
     // Dinners happen in the evening: a bare "at 6" means 6 pm.
