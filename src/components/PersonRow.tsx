@@ -93,7 +93,8 @@ export function PersonRow({ person, dinner, index, onAction, onEdit }: Props) {
           <Clock weight="light" className="ico" aria-hidden="true" />
           {person.noTimeGiven ? t.noTimeYet : formatTime(person.slot, dinner.lang)}
         </span>
-        {person.noTimeGiven && <span className="note">{t.countedIn(formatTime(person.slot, dinner.lang))}</span>}
+        {/* no-break spaces keep "5:00 pm" on one line */}
+        {person.noTimeGiven && <span className="note">{t.countedIn(formatTime(person.slot, dinner.lang).replace(/\s/g, " "))}</span>}
       </td>
       <td className="c-status">
         <span className={`status ${status.className}`}>

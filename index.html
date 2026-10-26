@@ -5,11 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#b8281c" />
     <meta name="description" content="The night-of ledger for a benefit dinner: paste the group chat, see who paid, who still owes, and how many plates to cook for each pickup time." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Supper Ledger" />
+    <meta property="og:title" content="Supper Ledger: one paste, and the night adds up" />
+    <meta property="og:description" content="Paste the group chat of a benefit dinner and see money against the goal, plates per pickup time, and who still owes. No sign-up, runs in the browser." />
+    <meta property="og:url" content="https://kasbsquall.github.io/supper-ledger/" />
+    <meta property="og:image" content="https://kasbsquall.github.io/supper-ledger/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Supper Ledger board: $1,995 collected of a $3,000 goal, plates per pickup slot and the group chat panel" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Supper Ledger: one paste, and the night adds up" />
+    <meta name="twitter:description" content="Paste the group chat of a benefit dinner and see money against the goal, plates per pickup time, and who still owes." />
+    <meta name="twitter:image" content="https://kasbsquall.github.io/supper-ledger/og.png" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <title>Supper Ledger</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app loads, and to readers without JavaScript. React replaces it. -->
+      <main style="max-width: 40rem; margin: 3rem auto; padding: 0 1rem; font-family: sans-serif; line-height: 1.5; color: #2c1a14">
+        <h1>Supper Ledger</h1>
+        <p><strong>One paste, and the night adds up.</strong></p>
+        <p>When a family sells plates to cover a hospital bill, the orders arrive as group-chat messages, and on the night one relative scrolls back and adds it all up by hand. Supper Ledger reads the pasted chat and shows money collected against the goal, plates to cook for each pickup time, and who still owes.</p>
+        <p>It reads lines like "Aunt Linda 5 tickets, sent 2 on Venmo" or "Tía Rosa 4 platos, yapeó 2", shows back any line it cannot read, and keeps everything in the browser on the organizer's phone. No sign-up, no server, no API key. English and Spanish.</p>
+        <noscript><p>Supper Ledger needs JavaScript to run. The source and screenshots are at <a href="https://github.com/kasbsquall/supper-ledger">github.com/kasbsquall/supper-ledger</a>.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
