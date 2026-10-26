@@ -36,3 +36,19 @@ export function readInput(raw: string): RelayInput | null {
   if (clean.some((line) => line.length === 0 || line.length > AI_MAX_LINE_CHARS)) return null;
   return { lines: clean, lang };
 }
+
+// Claude Opus 5.5 list prices in US dollars per million tokens (claude-api skill, shared/models.md).
+const INPUT_PER_MTOK = 4;
+const OUTPUT_PER_MTOK = 20;
+
+export interface Usage {
+  input_tokens?: number;
+  output_tokens?: number;
+}
+
+/** What one answer cost, in millionths of a dollar, from the usage the API reports. */
+export function costMicros(usage: Usage | undefined): number {
+  const input = usage?.input_tokens ?? 0;
+  const output = usage?.output_tokens ?? 0;
+  return Math.ceil(input * INPUT_PER_MTOK + output * OUTPUT_PER_MTOK);
+}

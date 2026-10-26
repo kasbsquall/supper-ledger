@@ -1,17 +1,21 @@
 import { buildRequest, type ModelReply } from "../src/ledger/ai";
-import { isAllowedOrigin, readInput } from "./guard";
+import { costMicros, isAllowedOrigin, readInput, type Usage } from "./guard";
 
 /**
  * The relay for the optional AI reading (prd.md > Asking AI about lines it could not read).
  * It holds the Anthropic key so nobody has to bring their own, builds the prompt itself so a
  * caller can only ask about chat lines, and caps how much anyone can spend. It logs nothing
- * and stores no lines: the only thing it keeps is a count per day, under a hashed address.
+ * and stores no lines: it keeps only a count per day under a hashed address, and what the
+ * month has cost so far, measured from the usage the API reports with each answer.
  */
 
 /** Per address per day, and for everyone together per day. */
 const PER_ADDRESS_PER_DAY = 30;
 const ALL_PER_DAY = 100;
 const COUNT_TTL_SECONDS = 2 * 24 * 60 * 60;
+/** Spending stops for the month once the answers add up to this, in US dollars. */
+const MONTHLY_BUDGET_USD = 15;
+const SPEND_TTL_SECONDS = 40 * 24 * 60 * 60;
 const UPSTREAM_TIMEOUT_MS = 30_000;
 
 interface Env {
@@ -44,7 +48,11 @@ export default {
     const addressKey = `day:${day}:${await hash(`${day}:${address}`)}`;
     const allKey = `day:${day}:all`;
     const [byAddress, byAll] = await Promise.all([readCount(env, addressKey), readCount(env, allKey)]);
-    if (byAddress >= PER_ADDRESS_PER_DAY || byAll >= ALL_PER_DAY) return reply({ error: "busy" }, 429, origin);
+    const spendKey = `month:${day.slice(0, 7)}:spend-micros`;
+    const spent = await readCount(env, spendKey);
+    if (byAddress >= PER_ADDRESS_PER_DAY || byAll >= ALL_PER_DAY || spent >= MONTHLY_BUDGET_USD * 1_000_000) {
+      return reply({ error: "busy" }, 429, origin);
+    }
     // Counted before the call, so a failed call still counts against the cap.
     await Promise.all([
       env.COUNTS.put(addressKey, String(byAddress + 1), { expirationTtl: COUNT_TTL_SECONDS }),
@@ -70,7 +78,10 @@ export default {
     if (!upstream.ok) return reply({ error: "upstream" }, 502, origin);
 
     // Only the text the app reads goes back; usage, ids and thinking stay here.
-    const answer = (await upstream.json()) as ModelReply;
+    const answer = (await upstream.json()) as ModelReply & { usage?: Usage };
+    // Read again just before writing, so answers that finished meanwhile are not lost.
+    const spentNow = await readCount(env, spendKey);
+    await env.COUNTS.put(spendKey, String(spentNow + costMicros(answer.usage)), { expirationTtl: SPEND_TTL_SECONDS });
     const content = answer.content.filter((b) => b.type === "text").map((b) => ({ type: "text", text: b.text ?? "" }));
     return reply({ stop_reason: answer.stop_reason, content }, 200, origin);
   },

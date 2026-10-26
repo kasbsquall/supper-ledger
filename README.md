@@ -58,7 +58,7 @@ This part is optional. For the lines left in "Not read", the organizer can ask A
 
 <img src="docs/ai-suggest.png" alt="Group chat panel on the live site: Grandma Rose wants a couple of plates, she'll venmo you $30 tonight reads as Grandma Rose 2 plates, with Add and Skip buttons; who's bringing napkins? is not an order or a payment" width="520">
 
-The code is in `src/ledger/ai.ts` (model `claude-opus-5-5` at low effort with structured JSON output) and the relay in `relay/worker.ts`, a Cloudflare Worker. The relay builds the prompt itself, so a caller can only ask about chat lines. It answers only the live site, takes 1 to 10 lines of up to 300 characters, allows 6 calls a minute and 30 a day per address and 100 a day in total, and logs nothing. The only thing it keeps is a daily count under a hashed address, which expires after two days.
+The code is in `src/ledger/ai.ts` (model `claude-opus-5-5` at low effort with structured JSON output) and the relay in `relay/worker.ts`, a Cloudflare Worker. The relay builds the prompt itself, so a caller can only ask about chat lines. It answers only the live site, takes 1 to 10 lines of up to 300 characters, allows 6 calls a minute and 30 a day per address and 100 a day in total, and stops for the month once the answers add up to US$15, measured from the token usage the API reports with each answer (one reading costs about a third of a cent). It logs nothing; it keeps only a daily count under a hashed address, which expires after two days, and the month's running cost.
 
 ## Private by design
 
@@ -84,7 +84,7 @@ npm test
 npm run build
 ```
 
-`npm test` runs 38 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
+`npm test` runs 39 numbered tests that map to the acceptance criteria in `devpost/prd.md`.
 
 ## How it was planned
 

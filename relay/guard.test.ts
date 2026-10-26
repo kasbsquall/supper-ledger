@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isAllowedOrigin, MAX_BODY_CHARS, readInput } from "./guard";
+import { costMicros, isAllowedOrigin, MAX_BODY_CHARS, readInput } from "./guard";
 
 // The relay's limits, after prd.md > Asking AI about lines it could not read.
 
@@ -29,5 +29,11 @@ describe("relay: who may call it and what it accepts", () => {
     expect(readInput("not json")).toBeNull();
     expect(readInput("null")).toBeNull();
     expect(readInput(" ".repeat(MAX_BODY_CHARS + 1))).toBeNull();
+  });
+
+  it("39. each answer's cost is counted from the usage the API reports", () => {
+    expect(costMicros({ input_tokens: 1000, output_tokens: 500 })).toBe(14_000);
+    expect(costMicros({ input_tokens: 1_000_000, output_tokens: 1_000_000 })).toBe(24_000_000);
+    expect(costMicros(undefined)).toBe(0);
   });
 });
