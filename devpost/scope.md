@@ -20,7 +20,9 @@ They open Supper Ledger, paste the latest chat messages, and the board updates: 
 The Peruvian "pollada pro-fondos" (a chicken dinner sold to raise money for a family in need) and its North American cousins: church fish fries, spaghetti dinners, bake sales for medical bills. It should feel like a warm, trustworthy paper ledger at the pickup table, not a fintech dashboard. Large numbers, readable on a phone held in one hand.
 
 ## Why This Matters to the Learner
-Not stated by the learner, who approved the scope without adding it ("si aprobado dale").
+I'm from Lima, and I know the pollada pro-fondos first-hand: when a family needs money for a hospital bill, everybody sells plates, the orders live in the group chat, and on the night one relative adds it all up by hand with a paper list at the table. I'm a UX researcher and product designer, so I wanted to build the tool for that relative: simple enough for someone who is not technical, and honest enough to show back every line it could not read.
+
+(Drafted with the agent at the learner's request, from what the learner shared in the interviews.)
 
 ## What "Working" Looks Like
 A judge opens the live link and taps "Try the sample dinner" (sample data, clearly labeled). They paste a few chat lines, and the board fills in: goal in dollars, tickets sold versus paid, plates per pickup slot, and the list of who still owes. They mark one person as paid and the totals move. The "oh, that's cool" beat: a messy line like "Marcus 3 plates, pickup 6pm, will cash at the door" lands in the right slot with the right balance.
